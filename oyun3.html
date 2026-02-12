@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaktik Rota - Görev 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- GENEL AYARLAR (UZAY TEMASI) --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Exo 2', sans-serif;
+            background-color: #000;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #00d2ff;
+            overflow: hidden;
+        }
+
+        /* --- KODLA BUTONU (SAĞ ÜST) --- */
+        .code-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 210, 255, 0.1);
+            color: #00d2ff;
+            border: 1px solid #00d2ff;
+            padding: 8px 16px;
+            border-radius: 5px; /* Köşeli teknolojik stil */
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+            z-index: 50;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .code-btn:hover {
+            background: #00d2ff;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.6);
+        }
+
+        /* --- ANA MENÜ BUTONU (SOL ÜST) --- */
+        .back-btn-space {
+            position: absolute;
+            top: 20px; 
+            left: 20px;
+            text-decoration: none;
+            color: #e0e0e0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .back-btn-space:hover { 
+            border-color: #00d2ff;
+            color: #00d2ff;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+        }
+
+        /* --- KOKPİT PANELİ (OYUN ALANI) --- */
+        .cockpit-panel {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(10, 20, 40, 0.85);
+            border: 2px solid #00d2ff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.15), inset 0 0 50px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Holografik Çizgiler */
+        .cockpit-panel::before {
+            content: '';
+            position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px dashed rgba(0, 210, 255, 0.3);
+            pointer-events: none;
+        }
+
+        .mission-header {
+            font-family: 'Orbitron', sans-serif;
+            color: #ffcc00;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+
+        .screen-display {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #fff;
+        }
+
+        .planet-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .cmd-btn {
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid #00d2ff;
+            color: #00d2ff;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%); /* Tekno şekil */
+        }
+
+        .cmd-btn:hover {
+            background: #00d2ff;
+            color: #000;
+            transform: scale(1.02);
+        }
+
+        /* --- FEEDBACK --- */
+        .feedback-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 10;
+            color: white; border-radius: 13px;
+        }
+
+        /* --- POPUP MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-card {
+            background: #0b1021;
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid #00d2ff;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+            color: #fff;
+        }
+
+        .close-modal-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            color: #888; font-size: 1.5rem; cursor: pointer;
+        }
+        .close-modal-btn:hover { color: #f44336; }
+
+        .action-link {
+            display: inline-block; margin-top: 10px; padding: 10px 20px;
+            border-radius: 5px; text-decoration: none; color: white; font-weight: bold; font-size: 0.9rem;
+            font-family: 'Orbitron', sans-serif; width: 80%;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn-space">
+        <span>🚀</span> Ana Menü
+    </a>
+
+    <button onclick="openCodeModal()" class="code-btn">
+        <span>💻</span> KODLA
+    </button>
+
+    <div class="cockpit-panel">
+        <div class="mission-header">GÖREV: <span id="mission-id">1</span></div>
+        
+        <div class="screen-display">
+            <div id="vis-container">
+                <div class="planet-icon" id="planet-icon">🌍</div>
+            </div>
+            <div id="question-text">
+                Bağlantı Kuruluyor...
+            </div>
+        </div>
+
+        <div class="options-grid" id="options-area">
+            </div>
+
+        <div class="feedback-overlay" id="feedback">
+            <h1 id="fb-title" style="font-family:'Orbitron'; font-size:2.5rem; margin-bottom:10px;">BAŞARILI!</h1>
+            <p id="fb-msg" style="font-size:1.2rem; max-width:80%;">Rota oluşturuldu.</p>
+            <button class="cmd-btn" onclick="nextLevel()" style="margin-top:20px; background:#00d2ff; color:black;">Sonraki Görev ▶</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="codeModal">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeCodeModal()">×</button>
+            <h2 style="color:#00d2ff; font-family:'Orbitron'; margin-top:0;">🚀 Uzay Mühendisi</h2>
+            <p style="color: #aaa; margin-bottom: 25px;">Geminin kontrol kodlarına eriş!</p>
+
+            <div style="text-align:left; margin-bottom:15px;">
+                <div style="margin-bottom:15px; border:1px solid #333; padding:10px; border-radius:5px;">
+                    <span style="font-size:1.5rem; margin-right:10px;">🐙</span>
+                    <b>1. Kaynak Kodu:</b> GitHub'dan <i>oyun3.html</i> dosyasını al.
+                </div>
+                <div style="margin-bottom:15px; border:1px solid #333; padding:10px; border-radius:5px;">
+                    <span style="font-size:1.5rem; margin-right:10px;">✨</span>
+                    <b>2. Editör:</b> Talent14 editörüne yapıştır ve gezegenleri değiştir.
+                </div>
+            </div>
+
+            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun3.html" target="_blank" class="action-link" style="background:#238636;">🔗 GitHub Linki</a>
+            <a href="https://app.talent14.com/codeEditor" target="_blank" class="action-link" style="background:#8a4bfa;">📝 Talent14 Editörü</a>
+        </div>
+    </div>
+
+    <script>
+        // --- POPUP KONTROL ---
+        function openCodeModal() {
+            const modal = document.getElementById('codeModal');
+            const card = modal.querySelector('.modal-card');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 10);
+        }
+        function closeCodeModal() {
+            const modal = document.getElementById('codeModal');
+            const card = modal.querySelector('.modal-card');
+            modal.style.opacity = '0'; card.style.transform = 'translateY(-50px)';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+        document.getElementById('codeModal').addEventListener('click', function(e) {
+            if(e.target === this) closeCodeModal();
+        });
+
+        // --- OYUN MANTIĞI (MAT.5.1.2 - Gerçek Yaşam/Uzay Problemleri) ---
+        const missions = [
+            {
+                text: "Dünya'dan Mars'a gideceğiz. Mesafe 55.000.000 km. Mars'tan Jüpiter'e gitmek için 550.000.000 km daha yolumuz var. Toplam yol kaç km?",
+                icon: "🪐",
+                options: ["605.000.000 km", "505.000.000 km", "650.000.000 km", "60.500.000 km"],
+                correct: 0,
+                feedback: "Doğru! (55 Milyon + 550 Milyon = 605 Milyon). Uzun bir yolculuk olacak."
+            },
+            {
+                text: "Yakıt tankımızda 900.000 litre yakıt var. Mars'a inene kadar 450.000 litresini harcadık. Depoda ne kadar kaldı?",
+                icon: "⛽",
+                options: ["550.000 Litre", "450.000 Litre", "350.000 Litre", "400.000 Litre"],
+                correct: 1,
+                feedback: "Harika! (900 Bin - 450 Bin = 450 Bin). Yolun yarısındayız!"
+            },
+            {
+                text: "Satürn'e ulaşmak için iki rota var. Rota A: 1.400.000.000 km. Rota B: 1.250.000.000 km. Hangi rota daha KISA?",
+                icon: "🌌",
+                options: ["Rota A (1.4 Milyar)", "Rota B (1.25 Milyar)"],
+                correct: 1,
+                feedback: "Doğru Karar! Rota B daha kısa olduğu için yakıt tasarrufu yapacağız."
+            },
+            {
+                text: "Uzay istasyonuna kargo taşıyoruz. Gemi kapasitesi 15.000 kg. Şu an 8.500 kg yük var. Kaç kg daha yük alabiliriz?",
+                icon: "📦",
+                options: ["7.500 kg", "5.500 kg", "6.500 kg", "8.000 kg"],
+                correct: 2,
+                feedback: "Mükemmel Hesap! (15.000 - 8.500 = 6.500). Kargo yüklemesi başlasın."
+            },
+            {
+                text: "Bir astronotun kalbi dakikada yaklaşık 70 kez atıyor. 10.000 dakikalık bir uyku süresinde kalbi kaç kez atar?",
+                icon: "❤️",
+                options: ["700.000", "70.000", "7.000", "7.000.000"],
+                correct: 0,
+                feedback: "Doğru! (70 x 10.000 = 700.000). Çarpma işlemi başarılı."
+            }
+        ];
+
+        let currentIdx = 0;
+
+        window.onload = loadMission;
+
+        function loadMission() {
+            if (currentIdx >= missions.length) {
+                endGame();
+                return;
+            }
+
+            const data = missions[currentIdx];
+            document.getElementById('mission-id').innerText = currentIdx + 1;
+            document.getElementById('planet-icon').innerText = data.icon;
+            document.getElementById('question-text').innerText = data.text;
+            document.getElementById('feedback').style.display = 'none';
+
+            const container = document.getElementById('options-area');
+            container.innerHTML = '';
+            
+            // Eğer 2 seçenek varsa grid yapısını değiştir
+            if(data.options.length === 2) {
+                container.style.gridTemplateColumns = "1fr 1fr";
+            } else {
+                container.style.gridTemplateColumns = "1fr 1fr";
+            }
+
+            data.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'cmd-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const data = missions[currentIdx];
+            const fb = document.getElementById('feedback');
+            const title = document.getElementById('fb-title');
+            const msg = document.getElementById('fb-msg');
+
+            if (selectedIndex === data.correct) {
+                title.innerText = "ROTA ONAYLANDI";
+                title.style.color = "#00ff00";
+                msg.innerText = data.feedback;
+                
+                const btn = fb.querySelector('button');
+                btn.innerText = "Sonraki Görev ▶";
+                btn.onclick = nextLevel;
+                btn.style.background = "#00d2ff";
+
+            } else {
+                title.innerText = "HESAPLAMA HATASI";
+                title.style.color = "#ff4444";
+                msg.innerText = "Navigasyon sistemi cevabı reddetti. Tekrar dene.";
+                
+                const btn = fb.querySelector('button');
+                btn.innerText = "Tekrar Dene ↺";
+                btn.onclick = () => { fb.style.display = 'none'; };
+                btn.style.background = "#ff4444";
+            }
+            fb.style.display = 'flex';
+        }
+
+        function nextLevel() {
+            currentIdx++;
+            loadMission();
+        }
+
+        function endGame() {
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'flex';
+            document.getElementById('fb-title').innerText = "GÖREV TAMAMLANDI";
+            document.getElementById('fb-msg').innerText = "Tüm galaktik rotalar başarıyla hesaplandı Kaptan!";
+            const btn = fb.querySelector('button');
+            btn.innerText = "Ana Menüye Dön";
+            btn.onclick = () => window.location.href = "index.html";
+        }
+
+    </script>
+</body>
+</html>

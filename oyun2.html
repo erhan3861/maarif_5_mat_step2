@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarih Avcısı - Görev 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+Egyptian+Hieroglyphs&display=swap" rel="stylesheet">
+    <style>
+        /* --- GENEL AYARLAR --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cinzel', serif;
+            background-color: #d2b48c;
+            background-image: 
+                radial-gradient(circle at 50% 50%, #e6cfa1 0%, #b38b59 100%),
+                url('https://www.transparenttextures.com/patterns/wall-4-light.png');
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3e2723;
+            overflow: hidden;
+        }
+
+        /* --- KODLA BUTONU (SAĞ ÜST) --- */
+        .code-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #d4af37, #aa8c2c); /* Altın Sarısı */
+            color: #3e2723;
+            border: 2px solid #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 50;
+            text-decoration: none;
+        }
+
+        .code-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px #ffd700;
+            background: #ffd700;
+        }
+
+        /* --- ANA MENÜ BUTONU (SOL ÜST) --- */
+        .back-btn-ancient {
+            position: absolute;
+            top: 20px; 
+            left: 20px;
+            text-decoration: none;
+            color: #3e2723;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+            font-size: 0.95rem;
+            border: 2px solid #5d4037;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 3px 3px 0px #5d4037;
+        }
+
+        .back-btn-ancient:hover { 
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px #5d4037;
+            background: #fff;
+        }
+
+        /* --- OYUN ALANI (TABLET) --- */
+        .stone-tablet {
+            background: #c5a073;
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 10px;
+            border: 8px solid #5d4037;
+            box-shadow: 
+                inset 0 0 50px rgba(0,0,0,0.3),
+                0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+            position: relative;
+        }
+        
+        /* Vida detayları */
+        .stone-tablet::before, .stone-tablet::after {
+            content: '☥'; /* Ankh sembolü */
+            position: absolute; top: 10px;
+            font-size: 2rem; color: #5d4037; opacity: 0.5;
+        }
+        .stone-tablet::before { left: 15px; }
+        .stone-tablet::after { right: 15px; }
+
+        .level-badge {
+            background: #5d4037;
+            color: #ffd700;
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 2px solid #ffd700;
+        }
+
+        /* Hiyeroglif Alanı */
+        .hieroglyph-display {
+            font-size: 3rem;
+            margin: 20px 0;
+            min-height: 80px;
+            color: #3e2723;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
+            letter-spacing: 5px;
+            font-family: 'Times New Roman', serif; /* Fallback */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .symbol-group {
+            display: inline-block;
+            margin: 0 10px;
+            border-bottom: 2px solid rgba(93, 64, 55, 0.2);
+        }
+
+        .input-area {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            padding: 15px;
+            font-size: 1.5rem;
+            width: 150px;
+            text-align: center;
+            border: 3px solid #5d4037;
+            background: #fdf5e6;
+            color: #3e2723;
+            border-radius: 5px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .check-btn {
+            background: #5d4037;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: background 0.2s;
+            border-bottom: 4px solid #3e2723;
+        }
+
+        .check-btn:active {
+            transform: translateY(4px);
+            border-bottom: 0;
+        }
+
+        /* --- BİLGİ KARTI (MISIR SAYILARI) --- */
+        .cheat-sheet {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.3);
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .cheat-item span { font-size: 1.5rem; display: block; }
+
+        /* --- FEEDBACK --- */
+        .feedback-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 10;
+            color: #ffd700; text-align: center; font-family: 'Cinzel', serif;
+        }
+
+        /* --- POPUP MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-card {
+            background: #1a1a1a;
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid #ffd700;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+        }
+
+        .modal-header {
+            font-size: 1.5rem; color: #ffd700; margin-bottom: 20px;
+            text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 15px;
+        }
+
+        .close-modal-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            color: #888; font-size: 1.5rem; cursor: pointer;
+        }
+        .close-modal-btn:hover { color: #f44336; }
+
+        .step-item {
+            background: #333; border: 1px solid #555; padding: 15px;
+            border-radius: 10px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px;
+            text-align: left;
+        }
+        .step-icon { font-size: 2rem; }
+        .step-content h4 { margin: 0; color: #fff; }
+        .step-content p { margin: 0; font-size: 0.9rem; color: #aaa; }
+        
+        .action-link {
+            display: inline-block; margin-top: 5px; padding: 8px 15px;
+            border-radius: 15px; text-decoration: none; color: white; font-weight: bold; font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn-ancient">
+        <span>🏛️</span> Ana Menü
+    </a>
+
+    <button onclick="openCodeModal()" class="code-btn">
+        <span>📜</span> KODLA
+    </button>
+
+    <div class="stone-tablet">
+        <div class="level-badge">Seviye: <span id="level-display">1</span></div>
+        
+        <h2>Antik Şifreyi Çöz</h2>
+        <p>Aşağıdaki Mısır sayıları modern dünyada kaç ediyor?</p>
+
+        <div class="hieroglyph-display" id="hieroglyphs">
+            </div>
+
+        <div class="input-area">
+            <input type="number" id="user-input" placeholder="?" autocomplete="off">
+            <button class="check-btn" onclick="checkAnswer()">KONTROL ET</button>
+        </div>
+
+        <div class="cheat-sheet">
+            <div class="cheat-item"><span>&#124;</span>1</div>
+            <div class="cheat-item"><span>&#8745;</span>10</div>
+            <div class="cheat-item"><span>&#64;</span>100</div> <div class="cheat-item"><span>&#9880;</span>1000</div>
+            <div class="cheat-item"><span>&#9757;</span>10.000</div>
+        </div>
+
+        <div class="feedback-overlay" id="feedback">
+            <h1 id="fb-title" style="font-size:3rem; margin-bottom:10px;">DOĞRU!</h1>
+            <p id="fb-msg" style="font-size:1.2rem; color:#fff;">Hazine odasının kapısı açılıyor...</p>
+            <button class="check-btn" onclick="nextLevel()" style="margin-top:20px; background:#ffd700; color:#3e2723;">Sonraki Şifre ▶</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="codeModal">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeCodeModal()">×</button>
+            <div class="modal-header">📜 Tarihçi Kodlaması</div>
+            
+            <p style="color: #bbb; margin-bottom: 25px;">Tarihi kodlarla yeniden canlandır!</p>
+
+            <div class="step-item">
+                <div class="step-icon">🏺</div>
+                <div class="step-content">
+                    <h4>1. Kaynak Kodu Al</h4>
+                    <p>GitHub'dan <b>oyun2.html</b> kodunu kopyala.</p>
+                    <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun2.html" target="_blank" class="action-link" style="background:#238636;">🔗 GitHub Linki</a>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-icon">✨</div>
+                <div class="step-content">
+                    <h4>2. Editörü Aç & Yapıştır</h4>
+                    <p>Talent14 editörüne yapıştır ve hiyeroglifleri değiştir.</p>
+                    <a href="https://app.talent14.com/codeEditor" target="_blank" class="action-link" style="background:#8a4bfa;">📝 Editörü Aç</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- POPUP KONTROL ---
+        function openCodeModal() {
+            const modal = document.getElementById('codeModal');
+            const card = modal.querySelector('.modal-card');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 10);
+        }
+        function closeCodeModal() {
+            const modal = document.getElementById('codeModal');
+            const card = modal.querySelector('.modal-card');
+            modal.style.opacity = '0'; card.style.transform = 'translateY(-50px)';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+        document.getElementById('codeModal').addEventListener('click', function(e) {
+            if(e.target === this) closeCodeModal();
+        });
+
+        // --- OYUN MANTIĞI ---
+        // Not: Gerçek hiyeroglifler unicode'da bazen görünmeyebilir, 
+        // bu yüzden benzer ASCII/Unicode karakterler kullandım.
+        // | = 1, ∩ (kesişim) = 10, @ (salyangoz/ip) = 100, ⚜ (çiçek) = 1000, ☝ (parmak) = 10000
+        
+        const symbols = {
+            1: "I",        // Çubuk
+            10: "∩",       // Nal (Topuk kemiği)
+            100: "୭",      // İp kangalı (veya @)
+            1000: "🪷",    // Nilüfer (veya ⚜)
+            10000: "☝"     // İşaret parmağı
+        };
+
+        const levels = [
+            { num: 23, hint: "2 Onluk, 3 Birlik" },
+            { num: 145, hint: "1 Yüzlük, 4 Onluk, 5 Birlik" },
+            { num: 302, hint: "3 Yüzlük, 0 Onluk, 2 Birlik" },
+            { num: 1234, hint: "1 Binlik..." },
+            { num: 21050, hint: "2 On Binlik, 1 Binlik, 5 Onluk" }
+        ];
+
+        let currentLvl = 0;
+        let currentTarget = 0;
+
+        window.onload = loadLevel;
+
+        function loadLevel() {
+            if (currentLvl >= levels.length) {
+                endGame();
+                return;
+            }
+
+            currentTarget = levels[currentLvl].num;
+            document.getElementById('level-display').innerText = currentLvl + 1;
+            document.getElementById('user-input').value = "";
+            document.getElementById('feedback').style.display = 'none';
+
+            generateHieroglyphs(currentTarget);
+        }
+
+        function generateHieroglyphs(number) {
+            const container = document.getElementById('hieroglyphs');
+            container.innerHTML = "";
+            
+            // Sayıyı basamaklarına ayır
+            let numStr = number.toString();
+            let len = numStr.length;
+
+            for (let i = 0; i < len; i++) {
+                let digit = parseInt(numStr[i]);
+                let placeVal = Math.pow(10, len - 1 - i);
+                
+                if (digit > 0) {
+                    let group = document.createElement('div');
+                    group.className = 'symbol-group';
+                    // Sembolü basamak değeri kadar tekrarla
+                    let sym = symbols[placeVal] || "?";
+                    group.innerText = sym.repeat(digit);
+                    container.appendChild(group);
+                }
+            }
+        }
+
+        function checkAnswer() {
+            let userVal = parseInt(document.getElementById('user-input').value);
+            const fb = document.getElementById('feedback');
+            const title = document.getElementById('fb-title');
+            const msg = document.getElementById('fb-msg');
+
+            if (userVal === currentTarget) {
+                title.innerText = "ŞİFRE ÇÖZÜLDÜ!";
+                title.style.color = "#ffd700";
+                msg.innerText = "Harika! Bir sonraki odaya geçiliyor.";
+                
+                // Sonraki butonunu güncelle
+                const btn = fb.querySelector('button');
+                btn.onclick = nextLevel;
+                btn.innerText = "Sonraki Seviye ▶";
+
+            } else {
+                title.innerText = "YANLIŞ ŞİFRE!";
+                title.style.color = "#ff4444";
+                msg.innerText = "Hiyeroglifleri dikkatli say. (İpucu: " + levels[currentLvl].hint + ")";
+                
+                // Butonu tekrar deneye çevir
+                const btn = fb.querySelector('button');
+                btn.onclick = () => { fb.style.display = 'none'; };
+                btn.innerText = "Tekrar Dene ↺";
+            }
+            fb.style.display = 'flex';
+        }
+
+        function nextLevel() {
+            currentLvl++;
+            loadLevel();
+        }
+
+        function endGame() {
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'flex';
+            document.getElementById('fb-title').innerText = "HAZİNE BULUNDU!";
+            document.getElementById('fb-msg').innerText = "Antik Mısır'ın tüm sırlarını çözdün.";
+            const btn = fb.querySelector('button');
+            btn.innerText = "Ana Menüye Dön";
+            btn.onclick = () => window.location.href = "index.html";
+        }
+
+    </script>
+</body>
+</html>

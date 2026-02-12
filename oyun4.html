@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İyilik Timi - Görev 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- GENEL AYARLAR --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #e8f5e9; /* Açık Yeşil */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #2e7d32;
+            overflow: hidden;
+        }
+
+        /* --- BUTONLAR --- */
+        .top-btn {
+            position: absolute; top: 20px;
+            padding: 10px 20px; border-radius: 25px;
+            font-weight: 700; text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s; z-index: 50;
+        }
+        .home-btn { left: 20px; background: #2e7d32; color: white; border: 2px solid white; }
+        .code-btn { right: 20px; background: white; color: #2e7d32; border: 2px solid #2e7d32; }
+        .top-btn:hover { transform: scale(1.05); }
+
+        /* --- OYUN SAHASI (SIMULATION AREA) --- */
+        .game-container {
+            width: 90%; max-width: 900px;
+            height: 80vh;
+            background: #fff;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(46, 125, 50, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 4px solid #a5d6a7;
+        }
+
+        /* Üst Panel: Görev Bilgisi */
+        .info-panel {
+            background: #c8e6c9;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #81c784;
+        }
+
+        .mission-text { font-size: 1.2rem; font-weight: bold; color: #1b5e20; }
+        .resource-counter { 
+            background: #fff; padding: 10px 20px; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 800; color: #e65100;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Orta Alan: Görselleştirme Sahası */
+        .field-area {
+            flex: 1;
+            background-color: #f1f8e9;
+            background-image: radial-gradient(#dcedc8 15%, transparent 16%);
+            background-size: 20px 20px;
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 20px;
+            overflow-y: auto;
+            justify-content: center;
+        }
+
+        /* Hedef Kutuları (Sıralar/Okullar) */
+        .target-zone {
+            background: rgba(255, 255, 255, 0.8);
+            border: 3px dashed #81c784;
+            border-radius: 15px;
+            min-width: 100px;
+            min-height: 100px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .target-label {
+            position: absolute; bottom: -25px; 
+            font-size: 0.9rem; font-weight: bold; color: #558b2f;
+        }
+
+        /* Dağıtılan Nesneler (Fidan/Kitap) */
+        .item {
+            font-size: 2rem;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 2px;
+        }
+
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* Alt Panel: Drone Kontrolü */
+        .control-panel {
+            background: #2e7d32;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            color: white;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .ctrl-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: none;
+            font-size: 1.5rem; font-weight: bold; cursor: pointer;
+            background: white; color: #2e7d32; transition: transform 0.1s;
+        }
+        .ctrl-btn:active { transform: scale(0.9); }
+
+        .input-display {
+            font-size: 2rem; font-weight: bold; width: 60px; text-align: center;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .action-btn {
+            padding: 15px 40px; background: #ffeb3b; color: #333;
+            border: none; border-radius: 30px; font-size: 1.2rem; font-weight: 800;
+            cursor: pointer; box-shadow: 0 5px 0 #fbc02d; transition: transform 0.1s;
+        }
+        .action-btn:active { transform: translateY(4px); box-shadow: none; }
+        .action-btn:disabled { background: #bdbdbd; box-shadow: none; cursor: not-allowed; }
+
+        /* Drone Animasyonu */
+        .drone {
+            position: absolute; font-size: 3rem; z-index: 100;
+            transition: all 0.5s ease-in-out;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
+            top: 10px; left: 10px;
+        }
+
+        /* Geri Bildirim Overlay */
+        .feedback-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            z-index: 200; color: white; text-align: center;
+        }
+
+        /* Mobil */
+        @media (max-width: 600px) {
+            .control-panel { flex-direction: column; gap: 10px; }
+            .mission-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="top-btn home-btn">🏡 Menü</a>
+    <button onclick="openCodeModal()" class="top-btn code-btn">💻 Kodla</button>
+
+    <div class="game-container">
+        <div class="info-panel">
+            <div class="mission-text" id="mission-desc">Görev Yükleniyor...</div>
+            <div class="resource-counter">Depo: <span id="total-resource">0</span></div>
+        </div>
+
+        <div class="field-area" id="field">
+            <div class="drone" id="drone">🚁</div>
+            </div>
+
+        <div class="control-panel">
+            <div class="control-text" style="font-size: 1rem; margin-right: 10px;">
+                Her gruba kaç tane düşer?
+            </div>
+            <div class="control-group">
+                <button class="ctrl-btn" onclick="adjustValue(-1)">-</button>
+                <div class="input-display" id="user-input">1</div>
+                <button class="ctrl-btn" onclick="adjustValue(1)">+</button>
+            </div>
+            <button class="action-btn" id="run-btn" onclick="runSimulation()">DAĞITIM BAŞLAT ▶</button>
+        </div>
+
+        <div class="feedback-overlay" id="feedback">
+            <h1 id="fb-icon" style="font-size: 5rem;">🎉</h1>
+            <h2 id="fb-title">MÜKEMMEL!</h2>
+            <p id="fb-msg">Tüm kaynaklar adil şekilde dağıtıldı.</p>
+            <button class="action-btn" onclick="nextLevel()" style="background:#43a047; color:white; box-shadow:none;">Sonraki Görev</button>
+        </div>
+    </div>
+
+    <div style="display:none;" id="codeModalPlaceholder">
+        </div>
+
+    <script>
+        // --- OYUN VERİLERİ (Senaryolar) ---
+        const levels = [
+            {
+                desc: "12 fidanı 3 sıraya eşit dikmeliyiz.",
+                total: 12,
+                groups: 3,
+                icon: "🌳",
+                groupName: "Sıra",
+                bg: "#f1f8e9"
+            },
+            {
+                desc: "20 kitabı 4 okula eşit bağışla.",
+                total: 20,
+                groups: 4,
+                icon: "📚",
+                groupName: "Okul",
+                bg: "#fff3e0" // Hafif turuncu (Kitaplık hissi)
+            },
+            {
+                desc: "15 koli erzağı 5 aileye paylaştır.",
+                total: 15,
+                groups: 5,
+                icon: "📦",
+                groupName: "Aile",
+                bg: "#e3f2fd" // Hafif mavi
+            },
+            {
+                desc: "18 oyuncak 6 çocuğa dağıtılacak.",
+                total: 18,
+                groups: 6,
+                icon: "🧸",
+                groupName: "Çocuk",
+                bg: "#fce4ec" // Pembe
+            }
+        ];
+
+        let currentLvl = 0;
+        let userEstimate = 1;
+        let isRunning = false;
+
+        window.onload = initLevel;
+
+        function initLevel() {
+            if (currentLvl >= levels.length) {
+                endGame();
+                return;
+            }
+
+            const data = levels[currentLvl];
+            
+            // UI Güncelle
+            document.getElementById('mission-desc').innerText = data.desc;
+            document.getElementById('total-resource').innerText = data.total;
+            document.getElementById('field').style.backgroundColor = data.bg;
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('run-btn').disabled = false;
+            
+            // Reset
+            userEstimate = 1;
+            updateInputDisplay();
+            createTargets(data.groups, data.groupName);
+            
+            // Drone Başlangıç
+            const drone = document.getElementById('drone');
+            drone.style.top = '10px';
+            drone.style.left = '10px';
+        }
+
+        function createTargets(count, label) {
+            const field = document.getElementById('field');
+            // Drone hariç temizle
+            field.innerHTML = '<div class="drone" id="drone">🚁</div>';
+
+            for (let i = 0; i < count; i++) {
+                const zone = document.createElement('div');
+                zone.className = 'target-zone';
+                zone.id = `zone-${i}`;
+                zone.innerHTML = `<div class="target-label">${label} ${i+1}</div>`;
+                field.appendChild(zone);
+            }
+        }
+
+        function adjustValue(delta) {
+            if (isRunning) return;
+            userEstimate += delta;
+            if (userEstimate < 1) userEstimate = 1;
+            updateInputDisplay();
+        }
+
+        function updateInputDisplay() {
+            document.getElementById('user-input').innerText = userEstimate;
+        }
+
+        // --- SİMÜLASYON MOTORU ---
+        async function runSimulation() {
+            isRunning = true;
+            document.getElementById('run-btn').disabled = true;
+            
+            const data = levels[currentLvl];
+            const drone = document.getElementById('drone');
+            let remaining = data.total;
+            
+            // Dağıtım Döngüsü
+            // Her gruba, kullanıcının seçtiği kadar item bırakacak
+            for (let i = 0; i < data.groups; i++) {
+                const zone = document.getElementById(`zone-${i}`);
+                
+                // Drone'u hedefe götür
+                const rect = zone.getBoundingClientRect();
+                const fieldRect = document.getElementById('field').getBoundingClientRect();
+                
+                // Drone pozisyonunu hesapla (Relative to field)
+                const topPos = rect.top - fieldRect.top - 20;
+                const leftPos = rect.left - fieldRect.left + (rect.width/2) - 20;
+                
+                drone.style.transform = `translate(${leftPos}px, ${topPos}px)`;
+                
+                // Drone'un gitmesini bekle
+                await new Promise(r => setTimeout(r, 600));
+
+                // Eşyaları Bırak
+                for (let k = 0; k < userEstimate; k++) {
+                    if (remaining > 0) {
+                        const item = document.createElement('div');
+                        item.className = 'item';
+                        item.innerText = data.icon;
+                        zone.appendChild(item);
+                        remaining--;
+                        document.getElementById('total-resource').innerText = remaining;
+                        
+                        // "Pıt" sesi efekti (kısa bekleme)
+                        await new Promise(r => setTimeout(r, 100));
+                    } else {
+                        // Kaynak bitti ama hala dağıtmaya çalışıyor
+                        showResult(false, "Kaynak yetmedi! Hesaplamayı kontrol et.");
+                        return;
+                    }
+                }
+            }
+
+            // Döngü bitti. Kontrol et.
+            if (remaining === 0) {
+                // Tam yetti mi? Yoksa eksik mi dağıttı?
+                // Matematiksel kontrol: (userEstimate * groups) == total
+                if (userEstimate * data.groups === data.total) {
+                    showResult(true, "Harika! Hiç artmadı, herkese eşit düştü.");
+                } else {
+                    // Bu block aslında çalışmaz çünkü remaining > 0 kontrolü yukarıda var
+                    // Ama mantıken buraya gelirse tam dağıtılmış demektir.
+                }
+            } else {
+                showResult(false, `Elimizde hala ${remaining} tane kaldı! Daha fazla verebilirdik.`);
+            }
+        }
+
+        function showResult(success, msg) {
+            isRunning = false;
+            const fb = document.getElementById('feedback');
+            const title = document.getElementById('fb-title');
+            const message = document.getElementById('fb-msg');
+            const icon = document.getElementById('fb-icon');
+            const btn = fb.querySelector('button');
+
+            if (success) {
+                icon.innerText = "🎉";
+                title.innerText = "GÖREV BAŞARILI!";
+                title.style.color = "#43a047";
+                btn.innerText = "Sonraki Seviye ▶";
+                btn.onclick = nextLevel;
+            } else {
+                icon.innerText = "⚠️";
+                title.innerText = "HESAP HATASI";
+                title.style.color = "#e65100";
+                btn.innerText = "Tekrar Dene ↺";
+                btn.onclick = () => { initLevel(); }; // Leveli sıfırla
+            }
+            
+            message.innerText = msg;
+            // Biraz bekleyip sonucu göster
+            setTimeout(() => {
+                fb.style.display = 'flex';
+            }, 500);
+        }
+
+        function nextLevel() {
+            currentLvl++;
+            initLevel();
+        }
+
+        function endGame() {
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'flex';
+            document.getElementById('fb-icon').innerText = "🏆";
+            document.getElementById('fb-title').innerText = "İYİLİK ELÇİSİ";
+            document.getElementById('fb-msg').innerText = "Simülasyon tamamlandı. Adaletli dağıtmayı öğrendin!";
+            const btn = fb.querySelector('button');
+            btn.innerText = "Ana Menüye Dön";
+            btn.onclick = () => window.location.href = "index.html";
+        }
+
+        // Modal kodları (Basit entegrasyon)
+        function openCodeModal() { alert("Bu özellik Index sayfasında daha detaylı!"); }
+
+    </script>
+</body>
+</html>

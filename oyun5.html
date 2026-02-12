@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Tüketici - Görev 5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- GENEL AYARLAR (ALIŞVERİŞ TEMASI) --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+            background-size: 20px 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* --- KODLA BUTONU (SAĞ ÜST) --- */
+        .code-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #238636, #2ea043); /* GitHub Yeşili */
+            color: white;
+            border: 2px solid white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 50;
+            text-decoration: none;
+        }
+
+        .code-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        /* --- ANA MENÜ BUTONU (SOL ÜST) --- */
+        .back-btn-shop {
+            position: absolute;
+            top: 20px; 
+            left: 20px;
+            text-decoration: none;
+            color: white;
+            background: #ff6b6b; /* Canlı Mercan */
+            font-size: 0.95rem;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .back-btn-shop:hover { 
+            background: #ff4757; 
+            transform: scale(1.05);
+        }
+
+        /* --- OYUN ALANI (SANAL MARKET) --- */
+        .shop-container {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            border-top: 10px solid #ff6b6b;
+        }
+
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .shop-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #2f3542;
+        }
+
+        .wallet {
+            background: #2ed573;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .question-box {
+            background: #f1f2f6;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            color: #57606f;
+            border-left: 5px solid #70a1ff;
+        }
+
+        /* Ürün Kartları */
+        .products-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .product-card {
+            background: white;
+            border: 2px solid #dfe4ea;
+            border-radius: 15px;
+            width: 200px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            border-color: #ff6b6b;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffa502;
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .p-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .p-name { font-weight: bold; display: block; margin-bottom: 5px; color: #2f3542; }
+        .p-detail { font-size: 0.9rem; color: #747d8c; display: block; margin-bottom: 10px; }
+        .p-price { font-size: 1.3rem; color: #ff4757; font-weight: 800; display: block; }
+
+        /* Geri Bildirim */
+        .feedback-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95); display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 10;
+            border-radius: 20px; text-align: center; padding: 20px;
+        }
+
+        .fb-icon { font-size: 4rem; margin-bottom: 10px; }
+        .next-btn {
+            margin-top: 20px; padding: 12px 30px; background: #70a1ff; color: white;
+            border: none; border-radius: 25px; cursor: pointer; font-size: 1.1rem;
+            font-weight: bold; box-shadow: 0 4px 10px rgba(112, 161, 255, 0.4);
+        }
+
+        /* --- POPUP MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 90%;
+            max-width: 500px;
+            border-top: 5px solid #ff6b6b;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: #333;
+        }
+
+        .close-modal-btn {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            color: #aaa; font-size: 1.5rem; cursor: pointer;
+        }
+        .close-modal-btn:hover { color: #ff4757; }
+
+        .action-link {
+            display: inline-block; margin-top: 10px; padding: 10px 20px;
+            border-radius: 10px; text-decoration: none; color: white; font-weight: bold; font-size: 0.9rem;
+            width: 80%; transition: transform 0.2s;
+        }
+        .action-link:hover { transform: scale(1.02); }
+
+        /* Mobil */
+        @media (max-width: 600px) {
+            .products-grid { flex-direction: column; align-items: center; }
+            .product-card { width: 100%; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn-shop">
+        <span>🏠</span> Ana Menü
+    </a>
+
+    <button onclick="openCodeModal()" class="code-btn">
+        <span>💻</span> KODLA
+    </button>
+
+    <div class="shop-container">
+        <div class="shop-header">
+            <div class="shop-title">🛒 EKONOMİK MARKET</div>
+            <div class="wallet">💰 Soru: <span id="q-num">1</span>/5</div>
+        </div>
+
+        <div class="question-box" id="scenario-text">
+            Soru yükleniyor...
+        </div>
+
+        <div class="products-grid" id="product-area">
+            </div>
+
+        <div class="feedback-overlay" id="feedback">
+            <div class="fb-icon" id="fb-emoji">🤩</div>
+            <h2 id="fb-title" style="color:#2ed573;">Mükemmel Seçim!</h2>
+            <p id="fb-msg" style="color:#555; font-size:1.1rem; max-width: 80%;">Tasarruf ettin.</p>
+            <button class="next-btn" onclick="nextLevel()">Devam Et ▶</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="codeModal">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeCodeModal()">×</button>
+            <h2 style="color:#ff6b6b; font-family:'Poppins'; margin-top:0;">🛒 Alışveriş Yazılımcısı</h2>
+            <p style="color: #777; margin-bottom: 25px;">Fiyatları ve mantığı kodla yönet!</p>
+
+            <div style="text-align:left; margin-bottom:15px;">
+                <div style="margin-bottom:10px; background:#f1f2f6; padding:10px; border-radius:10px;">
+                    <span style="font-size:1.5rem; margin-right:10px;">🐙</span>
+                    <b>Adım 1:</b> GitHub'dan <i>oyun5.html</i> kodunu kopyala.
+                </div>
+                <div style="margin-bottom:10px; background:#f1f2f6; padding:10px; border-radius:10px;">
+                    <span style="font-size:1.5rem; margin-right:10px;">✨</span>
+                    <b>Adım 2:</b> Talent14 editörüne yapıştır ve fiyatları değiştir.
+                </div>
+            </div>
+
+            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun5.html" target="_blank" class="action-link" style="background:#238636;">🔗 GitHub Linki</a>
+            <a href="https://app.talent14.com/codeEditor" target="_blank" class="action-link" style="background:#8a4bfa;">📝 Talent14 Editörü</a>
+        </div>
+    </div>
+
+    <script>
+        // --- POPUP KONTROL ---
+        function openCodeModal() {
+            const modal = document.getElementById('codeModal');
+            const card = modal.querySelector('.modal-card');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 10);
+        }
+        function closeCodeModal() {
+            const modal = document.getElementById('codeModal');
+            const card = modal.querySelector('.modal-card');
+            modal.style.opacity = '0'; card.style.transform = 'translateY(-50px)';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+        document.getElementById('codeModal').addEventListener('click', function(e) {
+            if(e.target === this) closeCodeModal();
+        });
+
+        // --- OYUN MANTIĞI (MAT.5.1.2 - Bilinçli Tüketici / Zaman / Para) ---
+        const scenarios = [
+            {
+                text: "Hangisinin 'birim fiyatı' (1 kg fiyatı) daha ucuzdur?",
+                products: [
+                    { name: "Ekonomik Pirinç", detail: "5 kg Paket", price: "100 TL", val: 20, icon: "🍚" }, // 20 TL/kg
+                    { name: "Pratik Pirinç", detail: "1 kg Paket", price: "25 TL", val: 25, icon: "🥡" }   // 25 TL/kg
+                ],
+                correctIndex: 0,
+                feedback: "Doğru! 100÷5 = 20 TL iken diğeri 25 TL. Büyük paket daha kârlı."
+            },
+            {
+                text: "Bugün tarih 10.05.2023. Bir ürünün raf ömrü 6 aydır. Son kullanma tarihi ne zaman olur?",
+                products: [
+                    { name: "Tarih A", detail: "Son: 10.10.2023", price: "Seç", val: 0, icon: "📅" },
+                    { name: "Tarih B", detail: "Son: 10.11.2023", price: "Seç", val: 1, icon: "📆" }
+                ],
+                correctIndex: 1,
+                feedback: "Harika! 5. aya 6 ay eklersek 11. ay (Kasım) olur."
+            },
+            {
+                text: "Cebinde 500 TL var. Gömlek 250 TL, Pantolon 300 TL. İkisini de almak istersen ne kadar paran EKSİK kalır?",
+                products: [
+                    { name: "Durum A", detail: "50 TL Eksik", price: "Seç", val: 50, icon: "💸" },
+                    { name: "Durum B", detail: "Para Yeterli", price: "Seç", val: 0, icon: "👍" }
+                ],
+                correctIndex: 0,
+                feedback: "Doğru Hesap! Toplam 550 TL tutuyor. 550 - 500 = 50 TL eksik."
+            },
+            {
+                text: "Bir markette indirim saat 14:00'te başlıyor ve 16:30'da bitiyor. İndirim ne kadar sürüyor?",
+                products: [
+                    { name: "Süre A", detail: "3 saat", price: "Seç", val: 0, icon: "⏰" },
+                    { name: "Süre B", detail: "2 saat 30 dk", price: "Seç", val: 1, icon: "⏱️" }
+                ],
+                correctIndex: 1,
+                feedback: "Süper! 16:30'dan 14:00'ü çıkarırsak 2 saat 30 dakika kalır."
+            },
+            {
+                text: "Hangisi daha avantajlı? (Birim fiyata dikkat!)",
+                products: [
+                    { name: "4'lü Meyve Suyu", detail: "Toplam Fiyat", price: "40 TL", val: 10, icon: "🧃" }, // Tanesi 10
+                    { name: "Tekli Meyve Suyu", detail: "Birim Fiyat", price: "12 TL", val: 12, icon: "🥤" }  // Tanesi 12
+                ],
+                correctIndex: 0,
+                feedback: "Bilinçli Tüketici! 4'lü pakette tanesi 10 TL'ye geliyor."
+            }
+        ];
+
+        let currentIdx = 0;
+
+        window.onload = loadScenario;
+
+        function loadScenario() {
+            if (currentIdx >= scenarios.length) {
+                endGame();
+                return;
+            }
+
+            const data = scenarios[currentIdx];
+            document.getElementById('q-num').innerText = currentIdx + 1;
+            document.getElementById('scenario-text').innerText = data.text;
+            document.getElementById('feedback').style.display = 'none';
+
+            const container = document.getElementById('product-area');
+            container.innerHTML = '';
+
+            data.products.forEach((prod, index) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => checkAnswer(index);
+                
+                card.innerHTML = `
+                    <span class="badge">FIRSAT?</span>
+                    <span class="p-icon">${prod.icon}</span>
+                    <span class="p-name">${prod.name}</span>
+                    <span class="p-detail">${prod.detail}</span>
+                    <span class="p-price">${prod.price}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const data = scenarios[currentIdx];
+            const fb = document.getElementById('feedback');
+            const title = document.getElementById('fb-title');
+            const msg = document.getElementById('fb-msg');
+            const icon = document.getElementById('fb-emoji');
+            const btn = document.querySelector('.next-btn');
+
+            if (selectedIndex === data.correctIndex) {
+                icon.innerText = "🤩";
+                title.innerText = "Mükemmel Seçim!";
+                title.style.color = "#2ed573";
+                msg.innerText = data.feedback;
+                btn.innerText = "Sıradaki Soru ▶";
+                btn.onclick = nextLevel;
+                btn.style.background = "#70a1ff";
+            } else {
+                icon.innerText = "💸";
+                title.innerText = "Daha Pahalı!";
+                title.style.color = "#ff4757";
+                msg.innerText = "Bu seçenek bütçeni zorlayabilir veya yanlış hesap. Tekrar dene.";
+                btn.innerText = "Tekrar Dene ↺";
+                btn.onclick = () => { fb.style.display = 'none'; };
+                btn.style.background = "#ff4757";
+            }
+            fb.style.display = 'flex';
+        }
+
+        function nextLevel() {
+            currentIdx++;
+            loadScenario();
+        }
+
+        function endGame() {
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'flex';
+            document.getElementById('fb-emoji').innerText = "🏆";
+            document.getElementById('fb-title').innerText = "BİLİNÇLİ TÜKETİCİ";
+            document.getElementById('fb-msg').innerText = "Tebrikler! Hem paranı hem zamanını en iyi şekilde yönettin.";
+            const btn = document.querySelector('.next-btn');
+            btn.innerText = "Ana Menüye Dön";
+            btn.onclick = () => window.location.href = "index.html";
+        }
+
+    </script>
+</body>
+</html>
