@@ -28,7 +28,14 @@
             width: 90%;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             z-index: 10;
+        }
+
+        /* Sağ tarafı gruplamak için */
+        .right-group {
+            display: flex;
+            gap: 10px;
         }
 
         .nav-btn {
@@ -46,6 +53,8 @@
             transition: transform 0.2s, background 0.2s;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
         }
 
         .nav-btn:hover {
@@ -149,6 +158,8 @@
         @media (max-width: 600px) {
             .options-grid { grid-template-columns: 1fr; }
             .math-problem { font-size: 1.5rem; }
+            .top-bar { flex-direction: column; gap: 10px; }
+            .right-group { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -158,9 +169,15 @@
         <a href="index.html" class="nav-btn">
             <span>🏠</span> Ana Menü
         </a>
-        <button onclick="openCodeModal()" class="nav-btn">
-            <span>💻</span> KODLA
-        </button>
+
+        <div class="right-group">
+            <button onclick="openCodeModal()" class="nav-btn">
+                <span>💻</span> KODLA
+            </button>
+            <button onclick="toggleFullScreen()" class="nav-btn" id="screenBtn">
+                <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
+            </button>
+        </div>
     </div>
 
     <div class="game-container" id="game-screen">
@@ -222,7 +239,40 @@
     </div>
 
     <script>
-        // --- SENARYOLAR VE SORULAR (Maarif Modeli Bağlamı) ---
+        // --- TAM EKRAN FONKSİYONU ---
+        function toggleFullScreen() {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
+            if (!document.fullscreenElement) {
+                // Tam ekrana geç
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
+            } else {
+                // Tam ekrandan çık
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Ekran durumu değiştiğinde butonu güncelle (ESC tuşu vb. için)
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙'; // Küçültme ikonu
+                btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶'; // Büyütme ikonu
+                btnText.innerText = 'TAM EKRAN';
+            }
+        });
+        // ------------------------------
+
+        // --- SENARYOLAR VE SORULAR ---
         const questions = [
             {
                 scenario: "Küresel ısınma nedeniyle kutup foklarının yaşam alanları azalmaktadır. Son 10 yılda yaklaşık 45.485 futbol sahası kadar ve sadece bu yıl 51.373 futbol sahası kadar buzul erimiştir.",

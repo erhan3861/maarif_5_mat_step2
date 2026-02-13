@@ -23,14 +23,18 @@
             overflow: hidden;
         }
 
-        /* --- KODLA BUTONU (SAĞ ÜST) --- */
-        .code-btn {
+        /* --- SAĞ ÜST BUTON GRUBU --- */
+        .top-right-group {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: linear-gradient(135deg, #238636, #2ea043); /* GitHub Yeşili */
-            color: white;
-            border: 2px solid white;
+            display: flex;
+            gap: 10px;
+            z-index: 50;
+        }
+
+        /* --- ORTAK BUTON STİLİ --- */
+        .top-btn {
             padding: 8px 16px;
             border-radius: 25px;
             font-weight: 600;
@@ -41,13 +45,29 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 50;
             text-decoration: none;
+            border: 2px solid white;
+        }
+
+        .code-btn {
+            background: linear-gradient(135deg, #238636, #2ea043); /* GitHub Yeşili */
+            color: white;
         }
 
         .code-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .screen-btn {
+            background: #fff;
+            color: #333;
+            border: 2px solid #ccc;
+        }
+
+        .screen-btn:hover {
+            transform: translateY(-2px);
+            border-color: #333;
         }
 
         /* --- ANA MENÜ BUTONU (SOL ÜST) --- */
@@ -238,9 +258,14 @@
         <span>🏠</span> Ana Menü
     </a>
 
-    <button onclick="openCodeModal()" class="code-btn">
-        <span>💻</span> KODLA
-    </button>
+    <div class="top-right-group">
+        <button onclick="openCodeModal()" class="top-btn code-btn">
+            <span>💻</span> KODLA
+        </button>
+        <button onclick="toggleFullScreen()" class="top-btn screen-btn" id="screenBtn">
+            <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
+        </button>
+    </div>
 
     <div class="shop-container">
         <div class="shop-header">
@@ -286,6 +311,38 @@
     </div>
 
     <script>
+        // --- TAM EKRAN FONKSİYONU ---
+        function toggleFullScreen() {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
+            if (!document.fullscreenElement) {
+                // Tam ekrana geç
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
+            } else {
+                // Tam ekrandan çık
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Ekran durumu değiştiğinde butonu güncelle
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙'; 
+                btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶'; 
+                btnText.innerText = 'TAM EKRAN';
+            }
+        });
+
         // --- POPUP KONTROL ---
         function openCodeModal() {
             const modal = document.getElementById('codeModal');
@@ -303,7 +360,7 @@
             if(e.target === this) closeCodeModal();
         });
 
-        // --- OYUN MANTIĞI (MAT.5.1.2 - Bilinçli Tüketici / Zaman / Para) ---
+        // --- OYUN MANTIĞI ---
         const scenarios = [
             {
                 text: "Hangisinin 'birim fiyatı' (1 kg fiyatı) daha ucuzdur?",

@@ -28,10 +28,37 @@
             font-weight: 700; text-decoration: none;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: transform 0.2s; z-index: 50;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            border: none;
         }
+        
         .home-btn { left: 20px; background: #2e7d32; color: white; border: 2px solid white; }
-        .code-btn { right: 20px; background: white; color: #2e7d32; border: 2px solid #2e7d32; }
         .top-btn:hover { transform: scale(1.05); }
+
+        /* Sağ Üst Grup */
+        .top-right-group {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; gap: 10px; z-index: 50;
+        }
+
+        .right-btn {
+            padding: 10px 20px; border-radius: 25px;
+            font-weight: 700; text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            background: white; color: #2e7d32; border: 2px solid #2e7d32;
+        }
+        
+        .right-btn:hover {
+            background: #2e7d32; color: white;
+        }
 
         /* --- OYUN SAHASI (SIMULATION AREA) --- */
         .game-container {
@@ -165,17 +192,39 @@
             z-index: 200; color: white; text-align: center;
         }
 
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; display: none;
+            align-items: center; justify-content: center;
+        }
+
+        .modal-card {
+            background: white; padding: 30px; border-radius: 20px;
+            text-align: center; border: 4px solid #2e7d32;
+            position: relative; width: 90%; max-width: 400px;
+        }
+
         /* Mobil */
         @media (max-width: 600px) {
             .control-panel { flex-direction: column; gap: 10px; }
             .mission-text { font-size: 1rem; }
+            .top-right-group { flex-direction: column; gap: 5px; top: 10px; right: 10px; }
         }
     </style>
 </head>
 <body>
 
     <a href="index.html" class="top-btn home-btn">🏡 Menü</a>
-    <button onclick="openCodeModal()" class="top-btn code-btn">💻 Kodla</button>
+    
+    <div class="top-right-group">
+        <button onclick="openCodeModal()" class="right-btn">
+            💻 KODLA
+        </button>
+        <button onclick="toggleFullScreen()" class="right-btn" id="screenBtn">
+            <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
+        </button>
+    </div>
 
     <div class="game-container">
         <div class="info-panel">
@@ -185,7 +234,7 @@
 
         <div class="field-area" id="field">
             <div class="drone" id="drone">🚁</div>
-            </div>
+        </div>
 
         <div class="control-panel">
             <div class="control-text" style="font-size: 1rem; margin-right: 10px;">
@@ -207,43 +256,69 @@
         </div>
     </div>
 
-    <div style="display:none;" id="codeModalPlaceholder">
+    <div class="modal-overlay" id="codeModal">
+        <div class="modal-card">
+            <button onclick="closeCodeModal()" style="position:absolute; top:10px; right:15px; border:none; background:none; font-size:1.5rem; cursor:pointer;">×</button>
+            <h2 style="color:#2e7d32;">🌱 Kodlama Bahçesi</h2>
+            <p>Kaynak kodlara ulaşmak ister misin?</p>
+            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun4.html" target="_blank" 
+               style="display:block; background:#333; color:white; padding:10px; border-radius:10px; text-decoration:none; margin:10px 0;">
+                🐙 GitHub Kaynak Kodu
+            </a>
+            <a href="https://app.talent14.com/codeEditor" target="_blank" 
+               style="display:block; background:#673ab7; color:white; padding:10px; border-radius:10px; text-decoration:none;">
+                ✨ Talent14 Editörü
+            </a>
         </div>
+    </div>
 
     <script>
+        // --- TAM EKRAN FONKSİYONU ---
+        function toggleFullScreen() {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙'; 
+                btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶'; 
+                btnText.innerText = 'TAM EKRAN';
+            }
+        });
+
         // --- OYUN VERİLERİ (Senaryolar) ---
         const levels = [
             {
                 desc: "12 fidanı 3 sıraya eşit dikmeliyiz.",
-                total: 12,
-                groups: 3,
-                icon: "🌳",
-                groupName: "Sıra",
-                bg: "#f1f8e9"
+                total: 12, groups: 3, icon: "🌳", groupName: "Sıra", bg: "#f1f8e9"
             },
             {
                 desc: "20 kitabı 4 okula eşit bağışla.",
-                total: 20,
-                groups: 4,
-                icon: "📚",
-                groupName: "Okul",
-                bg: "#fff3e0" // Hafif turuncu (Kitaplık hissi)
+                total: 20, groups: 4, icon: "📚", groupName: "Okul", bg: "#fff3e0"
             },
             {
                 desc: "15 koli erzağı 5 aileye paylaştır.",
-                total: 15,
-                groups: 5,
-                icon: "📦",
-                groupName: "Aile",
-                bg: "#e3f2fd" // Hafif mavi
+                total: 15, groups: 5, icon: "📦", groupName: "Aile", bg: "#e3f2fd"
             },
             {
                 desc: "18 oyuncak 6 çocuğa dağıtılacak.",
-                total: 18,
-                groups: 6,
-                icon: "🧸",
-                groupName: "Çocuk",
-                bg: "#fce4ec" // Pembe
+                total: 18, groups: 6, icon: "🧸", groupName: "Çocuk", bg: "#fce4ec"
             }
         ];
 
@@ -260,20 +335,16 @@
             }
 
             const data = levels[currentLvl];
-            
-            // UI Güncelle
             document.getElementById('mission-desc').innerText = data.desc;
             document.getElementById('total-resource').innerText = data.total;
             document.getElementById('field').style.backgroundColor = data.bg;
             document.getElementById('feedback').style.display = 'none';
             document.getElementById('run-btn').disabled = false;
             
-            // Reset
             userEstimate = 1;
             updateInputDisplay();
             createTargets(data.groups, data.groupName);
             
-            // Drone Başlangıç
             const drone = document.getElementById('drone');
             drone.style.top = '10px';
             drone.style.left = '10px';
@@ -281,7 +352,6 @@
 
         function createTargets(count, label) {
             const field = document.getElementById('field');
-            // Drone hariç temizle
             field.innerHTML = '<div class="drone" id="drone">🚁</div>';
 
             for (let i = 0; i < count; i++) {
@@ -304,7 +374,6 @@
             document.getElementById('user-input').innerText = userEstimate;
         }
 
-        // --- SİMÜLASYON MOTORU ---
         async function runSimulation() {
             isRunning = true;
             document.getElementById('run-btn').disabled = true;
@@ -313,25 +382,18 @@
             const drone = document.getElementById('drone');
             let remaining = data.total;
             
-            // Dağıtım Döngüsü
-            // Her gruba, kullanıcının seçtiği kadar item bırakacak
+            // Dağıtım
             for (let i = 0; i < data.groups; i++) {
                 const zone = document.getElementById(`zone-${i}`);
-                
-                // Drone'u hedefe götür
                 const rect = zone.getBoundingClientRect();
                 const fieldRect = document.getElementById('field').getBoundingClientRect();
                 
-                // Drone pozisyonunu hesapla (Relative to field)
                 const topPos = rect.top - fieldRect.top - 20;
                 const leftPos = rect.left - fieldRect.left + (rect.width/2) - 20;
                 
                 drone.style.transform = `translate(${leftPos}px, ${topPos}px)`;
-                
-                // Drone'un gitmesini bekle
                 await new Promise(r => setTimeout(r, 600));
 
-                // Eşyaları Bırak
                 for (let k = 0; k < userEstimate; k++) {
                     if (remaining > 0) {
                         const item = document.createElement('div');
@@ -340,26 +402,17 @@
                         zone.appendChild(item);
                         remaining--;
                         document.getElementById('total-resource').innerText = remaining;
-                        
-                        // "Pıt" sesi efekti (kısa bekleme)
                         await new Promise(r => setTimeout(r, 100));
                     } else {
-                        // Kaynak bitti ama hala dağıtmaya çalışıyor
                         showResult(false, "Kaynak yetmedi! Hesaplamayı kontrol et.");
                         return;
                     }
                 }
             }
 
-            // Döngü bitti. Kontrol et.
             if (remaining === 0) {
-                // Tam yetti mi? Yoksa eksik mi dağıttı?
-                // Matematiksel kontrol: (userEstimate * groups) == total
                 if (userEstimate * data.groups === data.total) {
                     showResult(true, "Harika! Hiç artmadı, herkese eşit düştü.");
-                } else {
-                    // Bu block aslında çalışmaz çünkü remaining > 0 kontrolü yukarıda var
-                    // Ama mantıken buraya gelirse tam dağıtılmış demektir.
                 }
             } else {
                 showResult(false, `Elimizde hala ${remaining} tane kaldı! Daha fazla verebilirdik.`);
@@ -385,14 +438,11 @@
                 title.innerText = "HESAP HATASI";
                 title.style.color = "#e65100";
                 btn.innerText = "Tekrar Dene ↺";
-                btn.onclick = () => { initLevel(); }; // Leveli sıfırla
+                btn.onclick = () => { initLevel(); };
             }
             
             message.innerText = msg;
-            // Biraz bekleyip sonucu göster
-            setTimeout(() => {
-                fb.style.display = 'flex';
-            }, 500);
+            setTimeout(() => { fb.style.display = 'flex'; }, 500);
         }
 
         function nextLevel() {
@@ -411,8 +461,12 @@
             btn.onclick = () => window.location.href = "index.html";
         }
 
-        // Modal kodları (Basit entegrasyon)
-        function openCodeModal() { alert("Bu özellik Index sayfasında daha detaylı!"); }
+        function openCodeModal() {
+            document.getElementById('codeModal').style.display = 'flex';
+        }
+        function closeCodeModal() {
+            document.getElementById('codeModal').style.display = 'none';
+        }
 
     </script>
 </body>

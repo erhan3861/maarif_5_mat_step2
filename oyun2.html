@@ -24,11 +24,18 @@
             overflow: hidden;
         }
 
-        /* --- KODLA BUTONU (SAĞ ÜST) --- */
-        .code-btn {
+        /* --- SAĞ ÜST BUTON GRUBU --- */
+        .top-right-group {
             position: absolute;
             top: 20px;
             right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 50;
+        }
+
+        /* --- ORTAK BUTON STİLİ --- */
+        .action-btn {
             background: linear-gradient(135deg, #d4af37, #aa8c2c); /* Altın Sarısı */
             color: #3e2723;
             border: 2px solid #fff;
@@ -43,11 +50,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 50;
             text-decoration: none;
         }
 
-        .code-btn:hover {
+        .action-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 0 20px #ffd700;
             background: #ffd700;
@@ -257,9 +263,15 @@
         <span>🏛️</span> Ana Menü
     </a>
 
-    <button onclick="openCodeModal()" class="code-btn">
-        <span>📜</span> KODLA
-    </button>
+    <div class="top-right-group">
+        <button onclick="openCodeModal()" class="action-btn">
+            <span>📜</span> KODLA
+        </button>
+        <button onclick="toggleFullScreen()" class="action-btn" id="screenBtn">
+            <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
+        </button>
+        
+    </div>
 
     <div class="stone-tablet">
         <div class="level-badge">Seviye: <span id="level-display">1</span></div>
@@ -317,6 +329,35 @@
     </div>
 
     <script>
+        // --- TAM EKRAN FONKSİYONU ---
+        function toggleFullScreen() {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙'; 
+                btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶'; 
+                btnText.innerText = 'TAM EKRAN';
+            }
+        });
+
         // --- POPUP KONTROL ---
         function openCodeModal() {
             const modal = document.getElementById('codeModal');
@@ -335,10 +376,6 @@
         });
 
         // --- OYUN MANTIĞI ---
-        // Not: Gerçek hiyeroglifler unicode'da bazen görünmeyebilir, 
-        // bu yüzden benzer ASCII/Unicode karakterler kullandım.
-        // | = 1, ∩ (kesişim) = 10, @ (salyangoz/ip) = 100, ⚜ (çiçek) = 1000, ☝ (parmak) = 10000
-        
         const symbols = {
             1: "I",        // Çubuk
             10: "∩",       // Nal (Topuk kemiği)
@@ -378,7 +415,6 @@
             const container = document.getElementById('hieroglyphs');
             container.innerHTML = "";
             
-            // Sayıyı basamaklarına ayır
             let numStr = number.toString();
             let len = numStr.length;
 
@@ -389,7 +425,6 @@
                 if (digit > 0) {
                     let group = document.createElement('div');
                     group.className = 'symbol-group';
-                    // Sembolü basamak değeri kadar tekrarla
                     let sym = symbols[placeVal] || "?";
                     group.innerText = sym.repeat(digit);
                     container.appendChild(group);
@@ -408,7 +443,6 @@
                 title.style.color = "#ffd700";
                 msg.innerText = "Harika! Bir sonraki odaya geçiliyor.";
                 
-                // Sonraki butonunu güncelle
                 const btn = fb.querySelector('button');
                 btn.onclick = nextLevel;
                 btn.innerText = "Sonraki Seviye ▶";
@@ -418,7 +452,6 @@
                 title.style.color = "#ff4444";
                 msg.innerText = "Hiyeroglifleri dikkatli say. (İpucu: " + levels[currentLvl].hint + ")";
                 
-                // Butonu tekrar deneye çevir
                 const btn = fb.querySelector('button');
                 btn.onclick = () => { fb.style.display = 'none'; };
                 btn.innerText = "Tekrar Dene ↺";

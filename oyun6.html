@@ -25,19 +25,33 @@
             overflow: hidden;
         }
 
-        /* --- BUTONLAR --- */
+        /* --- SAĞ ÜST BUTON GRUBU --- */
+        .top-right-group {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 50;
+        }
+
+        /* --- ORTAK BUTON STİLİ --- */
         .top-btn {
-            position: absolute; top: 20px;
             padding: 8px 20px; border-radius: 5px;
             font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem;
-            text-decoration: none; cursor: pointer; z-index: 50;
+            text-decoration: none; cursor: pointer;
             transition: all 0.3s; letter-spacing: 1px;
             border: 1px solid #00f3ff; background: rgba(0, 243, 255, 0.1); color: #00f3ff;
             box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            display: flex; align-items: center; gap: 8px;
         }
-        .home-btn { left: 20px; }
-        .code-btn { right: 20px; }
-        .top-btn:hover { background: #00f3ff; color: #000; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); }
+        
+        .top-btn:hover {
+            background: #00f3ff; color: #000; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+        }
+
+        /* Sol Üst Buton */
+        .home-btn { position: absolute; top: 20px; left: 20px; z-index: 50; }
 
         /* --- OYUN ALANI (DENGE SİSTEMİ) --- */
         .lab-container {
@@ -167,6 +181,7 @@
             .core { width: 120px; height: 120px; top: -120px; }
             .core-val { font-size: 1.2rem; }
             .control-panel { flex-direction: column; width: 80%; }
+            .top-right-group { top: 10px; right: 10px; flex-direction: column; gap: 5px; }
         }
 
     </style>
@@ -174,7 +189,15 @@
 <body>
 
     <a href="index.html" class="top-btn home-btn">⬡ ANA MENÜ</a>
-    <button onclick="openCodeModal()" class="top-btn code-btn">⌨ KODLA</button>
+    
+    <div class="top-right-group">
+        <button onclick="openCodeModal()" class="top-btn code-btn">
+            ⌨ KODLA
+        </button>
+        <button onclick="toggleFullScreen()" class="top-btn" id="screenBtn">
+            <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
+        </button>
+    </div>
 
     <div class="lab-container">
         
@@ -240,6 +263,35 @@
     </div>
 
     <script>
+        // --- TAM EKRAN FONKSİYONU ---
+        function toggleFullScreen() {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙'; 
+                btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶'; 
+                btnText.innerText = 'TAM EKRAN';
+            }
+        });
+
         // --- POPUP KONTROL ---
         function openCodeModal() {
             const modal = document.getElementById('codeModal');

@@ -27,9 +27,16 @@
             top: 20px;
             width: 95%;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Sol ve Sağ grubu ayırır */
             z-index: 100;
             pointer-events: none;
+        }
+
+        /* Sağdaki butonları gruplamak için kapsayıcı */
+        .right-buttons {
+            display: flex;
+            gap: 15px; /* Butonlar arası boşluk */
+            pointer-events: auto;
         }
 
         .btn-style {
@@ -48,12 +55,15 @@
             align-items: center;
             gap: 10px;
             transition: all 0.3s ease;
-            pointer-events: auto;
+            pointer-events: auto; /* Tıklanabilir yap */
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
+        /* Hover Efektleri */
         .btn-info:hover { background: #00d2ff; border-color: #00d2ff; color: #000; transform: translateY(-2px); }
         .btn-code:hover { background: #238636; border-color: #238636; transform: translateY(-2px); }
+        /* Yeni Eklenen Ekran Butonu Rengi */
+        .btn-screen:hover { background: #e91e63; border-color: #e91e63; transform: translateY(-2px); }
 
         /* --- HEADER --- */
         header {
@@ -225,6 +235,9 @@
             .about-card { max-height: 85vh; overflow-y: auto; }
             .grid-container { gap: 15px; }
             h1 { font-size: 2rem; }
+            /* Mobilde üst butonları sıkıştırmamak için */
+            .top-buttons { flex-direction: column; gap: 10px; align-items: flex-start; }
+            .right-buttons { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -234,9 +247,16 @@
         <button onclick="openModal('infoModal')" class="btn-style btn-info">
             <span>📘</span> PROJE HAKKINDA
         </button>
-        <button onclick="openModal('codeModal')" class="btn-style btn-code">
-            <span>💻</span> KODLA
-        </button>
+
+        <div class="right-buttons">
+            
+            <button onclick="openModal('codeModal')" class="btn-style btn-code">
+                <span>💻</span> KODLA
+            </button>
+            <button onclick="toggleFullScreen()" class="btn-style btn-screen" id="screenBtn">
+                <span id="screenIcon">⛶ Tam Ekran</span>
+            </button>
+        </div>
     </div>
 
     <header>
@@ -335,6 +355,39 @@
     </div>
 
     <script>
+        // --- YENİ EKLENEN TAM EKRAN KODU ---
+        function toggleFullScreen() {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
+            if (!document.fullscreenElement) {
+                // Tam ekrana geç
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
+            } else {
+                // Tam ekrandan çık
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Ekran durumu değiştiğinde butonu güncelle (ESC tuşu vb. için)
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙ Küçült'; // Küçültme ikonu
+                // btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶ Tam Ekran'; // Büyütme ikonu
+                // btnText.innerText = 'TAM EKRAN';
+            }
+        });
+        // --- SON: TAM EKRAN KODU ---
+
         function openModal(id) {
             const modal = document.getElementById(id);
             const card = modal.querySelector('.modal-card');
@@ -358,8 +411,9 @@
         window.onclick = function(event) {
             if (event.target.classList.contains('modal-overlay')) {
                 const overlay = event.target;
+                const card = overlay.querySelector('.modal-card');
                 overlay.style.opacity = '0';
-                overlay.querySelector('.modal-card').style.transform = 'scale(0.9)';
+                card.style.transform = 'scale(0.9)';
                 setTimeout(() => {
                     overlay.style.display = 'none';
                 }, 300);
