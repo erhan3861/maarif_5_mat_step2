@@ -3,433 +3,470 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilinçli Market - Görev 4</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Nunito:wght@700&display=swap" rel="stylesheet">
+    <title>İyilik Timi - Görev 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- GENEL AYARLAR (MARKET TEMASI) --- */
+        /* --- GENEL AYARLAR --- */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Nunito', sans-serif;
-            background-color: #6c5ce7;
-            /* Market Rafı Görünümü */
-            background-image: 
-                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-color: #e8f5e9; /* Açık Yeşil */
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #333;
+            color: #2e7d32;
             overflow: hidden;
         }
 
-        /* --- ÜST BUTONLAR --- */
-        .top-bar {
-            position: absolute; top: 20px; width: 95%;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 50; pointer-events: none;
-        }
-        .right-group { display: flex; gap: 10px; pointer-events: auto; }
-        
+        /* --- BUTONLAR --- */
         .top-btn {
-            padding: 8px 20px; border-radius: 8px; border: none;
-            font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.9rem;
-            text-decoration: none; cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: auto; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
-        }
-
-        .home-btn { background: #fdcb6e; color: #2d3436; border: 2px solid #e17055; }
-        .code-btn { background: #00cec9; color: #2d3436; border: 2px solid #00b894; }
-        .full-btn { background: #636e72; color: white; border: 2px solid #2d3436; }
-
-        .top-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
-        .top-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-
-        /* --- OYUN ALANI (KASA & FİŞ) --- */
-        .market-layout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            width: 95%;
-            max-width: 1000px;
-            height: 80vh;
-        }
-
-        /* Yazar Kasa */
-        .register-machine {
-            background: #2d3436;
-            padding: 20px;
-            border-radius: 20px;
-            border-bottom: 10px solid #1e272e;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            width: 350px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .brand-logo { color: #b2bec3; font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 10px; }
-
-        /* Dijital Ekran */
-        .display-screen {
-            background: #000;
-            color: #00ff00;
-            font-family: 'Share Tech Mono', monospace;
-            width: 90%;
-            height: 60px;
-            border: 4px solid #555;
-            border-radius: 5px;
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 15px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-        }
-
-        /* Ürün Bandı (Bilgi Ekranı) */
-        .product-info {
-            background: #dfe6e9;
-            width: 90%;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 2px dashed #b2bec3;
-        }
-        .p-name { font-size: 1.2rem; font-weight: bold; color: #2d3436; display: block; }
-        .p-price { font-size: 1.1rem; color: #d63031; }
-        .p-tax { color: #0984e3; font-weight: bold; }
-
-        /* Tuş Takımı */
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            width: 90%;
-        }
-
-        .key {
-            background: #636e72;
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 1.2rem;
-            border-radius: 8px;
+            position: absolute; top: 20px;
+            padding: 10px 20px; border-radius: 25px;
+            font-weight: 700; text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s; z-index: 50;
             cursor: pointer;
-            box-shadow: 0 4px 0 #2d3436;
-            transition: transform 0.1s;
-            font-family: 'Share Tech Mono', monospace;
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            border: none;
         }
-        .key:active { transform: translateY(3px); box-shadow: 0 1px 0 #2d3436; }
-        .key-clear { background: #d63031; box-shadow: 0 4px 0 #c0392b; }
-        .key-enter { background: #00b894; grid-column: span 3; box-shadow: 0 4px 0 #009476; color: #fff; font-weight: bold; }
+        
+        .home-btn { left: 20px; background: #2e7d32; color: white; border: 2px solid white; }
+        .top-btn:hover { transform: scale(1.05); }
 
-        /* Fiş (Receipt) Alanı */
-        .receipt-area {
+        /* Sağ Üst Grup */
+        .top-right-group {
+            position: absolute; top: 20px; right: 20px;
+            display: flex; gap: 10px; z-index: 50;
+        }
+
+        .right-btn {
+            padding: 10px 20px; border-radius: 25px;
+            font-weight: 700; text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            background: white; color: #2e7d32; border: 2px solid #2e7d32;
+        }
+        
+        .right-btn:hover {
+            background: #2e7d32; color: white;
+        }
+
+        /* --- OYUN SAHASI (SIMULATION AREA) --- */
+        .game-container {
+            width: 90%; max-width: 900px;
+            height: 80vh;
             background: #fff;
-            width: 300px;
-            height: 500px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(46, 125, 50, 0.2);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
+            border: 4px solid #a5d6a7;
         }
 
-        /* Fişin tırtıklı tepesi */
-        .receipt-area::before {
-            content: "";
-            position: absolute; top: -10px; left: 0; width: 100%; height: 20px;
-            background: linear-gradient(135deg, transparent 10px, #fff 10px), linear-gradient(225deg, transparent 10px, #fff 10px);
-            background-size: 20px 20px;
-            background-position: 0 10px;
-            background-repeat: repeat-x;
-        }
-
-        .receipt-header {
-            text-align: center;
-            padding: 30px 20px 10px 20px;
-            border-bottom: 1px dashed #aaa;
-            font-family: 'Share Tech Mono', monospace;
-            color: #555;
-        }
-
-        .receipt-body {
-            flex: 1;
+        /* Üst Panel: Görev Bilgisi */
+        .info-panel {
+            background: #c8e6c9;
             padding: 20px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.9rem;
-            color: #333;
-            overflow-y: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #81c784;
         }
 
-        .receipt-line {
-            display: flex; justify-content: space-between; margin-bottom: 8px;
-            animation: printLine 0.5s ease;
+        .mission-text { font-size: 1.2rem; font-weight: bold; color: #1b5e20; }
+        .resource-counter { 
+            background: #fff; padding: 10px 20px; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 800; color: #e65100;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Orta Alan: Görselleştirme Sahası */
+        .field-area {
+            flex: 1;
+            background-color: #f1f8e9;
+            background-image: radial-gradient(#dcedc8 15%, transparent 16%);
+            background-size: 20px 20px;
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 20px;
+            overflow-y: auto;
+            justify-content: center;
+        }
+
+        /* Hedef Kutuları (Sıralar/Okullar) */
+        .target-zone {
+            background: rgba(255, 255, 255, 0.8);
+            border: 3px dashed #81c784;
+            border-radius: 15px;
+            min-width: 100px;
+            min-height: 100px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            position: relative;
+            transition: all 0.3s;
         }
         
-        @keyframes printLine { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .target-label {
+            position: absolute; bottom: -25px; 
+            font-size: 0.9rem; font-weight: bold; color: #558b2f;
+        }
 
-        /* Feedback Overlay */
+        /* Dağıtılan Nesneler (Fidan/Kitap) */
+        .item {
+            font-size: 2rem;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 2px;
+        }
+
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* Alt Panel: Drone Kontrolü */
+        .control-panel {
+            background: #2e7d32;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            color: white;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .ctrl-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: none;
+            font-size: 1.5rem; font-weight: bold; cursor: pointer;
+            background: white; color: #2e7d32; transition: transform 0.1s;
+        }
+        .ctrl-btn:active { transform: scale(0.9); }
+
+        .input-display {
+            font-size: 2rem; font-weight: bold; width: 60px; text-align: center;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .action-btn {
+            padding: 15px 40px; background: #ffeb3b; color: #333;
+            border: none; border-radius: 30px; font-size: 1.2rem; font-weight: 800;
+            cursor: pointer; box-shadow: 0 5px 0 #fbc02d; transition: transform 0.1s;
+        }
+        .action-btn:active { transform: translateY(4px); box-shadow: none; }
+        .action-btn:disabled { background: #bdbdbd; box-shadow: none; cursor: not-allowed; }
+
+        /* Drone Animasyonu */
+        .drone {
+            position: absolute; font-size: 3rem; z-index: 100;
+            transition: all 0.5s ease-in-out;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
+            top: 10px; left: 10px;
+        }
+
+        /* Geri Bildirim Overlay */
         .feedback-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: none;
+            background: rgba(0,0,0,0.85); display: none;
             flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; color: white; text-align: center; border-radius: 15px;
+            z-index: 200; color: white; text-align: center;
         }
 
-        .next-btn {
-            margin-top: 20px; padding: 12px 30px; background: #00cec9; color: #2d3436;
-            border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1.1rem;
-        }
-
-        /* Şifre Kartı */
-        .secret-card {
-            border: 2px dashed #00cec9; padding: 20px; border-radius: 10px; 
-            background: rgba(0, 206, 201, 0.1); margin-top: 15px; display: none;
-        }
-        .secret-letter { font-size: 3rem; color: #00cec9; font-weight: bold; display: block; }
-
-        /* KODLAMA MODAL */
+        /* --- MODAL --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); z-index: 1000;
-            display: none; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.8); z-index: 1000; display: none;
+            align-items: center; justify-content: center;
         }
-        .modal-card {
-            background: #fff; padding: 30px; border-radius: 15px; max-width: 450px;
-            text-align: center; color: #333; position: relative; border-top: 5px solid #00cec9;
-        }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; border: none; background: none; }
-        .action-link { display: block; background: #333; color: white; padding: 12px; border-radius: 8px; text-decoration: none; margin: 10px 0; font-weight: bold; }
 
-        @media (max-width: 800px) {
-            .market-layout { flex-direction: column; height: auto; padding: 20px 0; }
-            .receipt-area { height: 200px; width: 350px; }
+        .modal-card {
+            background: white; padding: 30px; border-radius: 20px;
+            text-align: center; border: 4px solid #2e7d32;
+            position: relative; width: 90%; max-width: 400px;
+        }
+
+        /* Mobil */
+        @media (max-width: 600px) {
+            .control-panel { flex-direction: column; gap: 10px; }
+            .mission-text { font-size: 1rem; }
+            .top-right-group { flex-direction: column; gap: 5px; top: 10px; right: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="index.html" class="top-btn home-btn">⌂ ANA MENÜ</a>
-        <div class="right-group">
-            <button onclick="openCodeModal()" class="top-btn code-btn">⌨ KODLA</button>
-            <button onclick="toggleFullScreen()" id="full-btn" class="top-btn full-btn">⛶ TAM EKRAN</button>
-        </div>
+    <a href="index.html" class="top-btn home-btn">🏡 Menü</a>
+    
+    <div class="top-right-group">
+        <button onclick="openCodeModal()" class="right-btn">
+            💻 KODLA
+        </button>
+        <button onclick="toggleFullScreen()" class="right-btn" id="screenBtn">
+            <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
+        </button>
     </div>
 
-    <div class="market-layout">
-        <div class="register-machine">
-            <div class="brand-logo">MAARİF POS v2.0</div>
-            
-            <div class="display-screen" id="screen">_</div>
-
-            <div class="product-info">
-                <span style="font-size:0.8rem; color:#636e72;">ÜRÜN BİLGİSİ (<span id="level-idx">1/5</span>)</span>
-                <span class="p-name" id="p-name">SÜT</span>
-                <span class="p-price" id="p-price">FİYAT: 50 TL</span>
-                <div style="margin-top:5px; border-top:1px dashed #b2bec3; padding-top:5px;">
-                    HESAPLA: <span class="p-tax" id="p-tax">Fiyatın 1/10'u (KDV)</span>
-                </div>
-            </div>
-
-            <div class="keypad">
-                <button class="key" onclick="pressKey(7)">7</button>
-                <button class="key" onclick="pressKey(8)">8</button>
-                <button class="key" onclick="pressKey(9)">9</button>
-                <button class="key" onclick="pressKey(4)">4</button>
-                <button class="key" onclick="pressKey(5)">5</button>
-                <button class="key" onclick="pressKey(6)">6</button>
-                <button class="key" onclick="pressKey(1)">1</button>
-                <button class="key" onclick="pressKey(2)">2</button>
-                <button class="key" onclick="pressKey(3)">3</button>
-                <button class="key key-clear" onclick="clearScreen()">C</button>
-                <button class="key" onclick="pressKey(0)">0</button>
-                <button class="key" onclick="pressKey('.')">.</button>
-                <button class="key key-enter" onclick="checkAnswer()">GİRİŞ / ONAYLA</button>
-            </div>
+    <div class="game-container">
+        <div class="info-panel">
+            <div class="mission-text" id="mission-desc">Görev Yükleniyor...</div>
+            <div class="resource-counter">Depo: <span id="total-resource">0</span></div>
         </div>
 
-        <div class="receipt-area">
-            <div class="receipt-header">
-                <h3>BİLİNÇLİ MARKET</h3>
-                <p>Tarih: Bugün</p>
-                <p>Fiş No: 00513</p>
+        <div class="field-area" id="field">
+            <div class="drone" id="drone">🚁</div>
+        </div>
+
+        <div class="control-panel">
+            <div class="control-text" style="font-size: 1rem; margin-right: 10px;">
+                Her gruba kaç tane düşer?
             </div>
-            <div class="receipt-body" id="receipt-body">
-                </div>
-        </div>
-    </div>
-
-    <div class="feedback-overlay" id="feedback">
-        <h1 style="font-size: 4rem; margin:0;">🧾</h1>
-        <h2 style="color:#00cec9;" id="fb-title">DOĞRU HESAP!</h2>
-        <p id="fb-msg">KDV tutarını doğru hesapladın. Fiş kesiliyor...</p>
-        
-        <div class="secret-card" id="secret-card">
-            ŞİFRE PARÇASI:
-            <span class="secret-letter">K</span>
+            <div class="control-group">
+                <button class="ctrl-btn" onclick="adjustValue(-1)">-</button>
+                <div class="input-display" id="user-input">1</div>
+                <button class="ctrl-btn" onclick="adjustValue(1)">+</button>
+            </div>
+            <button class="action-btn" id="run-btn" onclick="runSimulation()">DAĞITIM BAŞLAT ▶</button>
         </div>
 
-        <button class="next-btn" id="next-btn" onclick="nextLevel()">SIRADAKİ MÜŞTERİ ▶</button>
+        <div class="feedback-overlay" id="feedback">
+            <h1 id="fb-icon" style="font-size: 5rem;">🎉</h1>
+            <h2 id="fb-title">MÜKEMMEL!</h2>
+            <p id="fb-msg">Tüm kaynaklar adil şekilde dağıtıldı.</p>
+            <button class="action-btn" onclick="nextLevel()" style="background:#43a047; color:white; box-shadow:none;">Sonraki Görev</button>
+        </div>
     </div>
 
     <div class="modal-overlay" id="codeModal">
         <div class="modal-card">
-            <button class="close-btn" onclick="closeCodeModal()">×</button>
-            <h2 style="color:#00cec9;">💳 Kasa Yazılımı</h2>
-            <p>Vergi oranlarını ve fiyatları kodlarla değiştir!</p>
-            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun4.html" target="_blank" class="action-link" style="background:#2d3436;">🐙 GitHub Kaynak Kodu</a>
-            <a href="https://app.talent14.com/codeEditor" target="_blank" class="action-link" style="background:#00cec9;">✨ Talent14 Editörü</a>
+            <button onclick="closeCodeModal()" style="position:absolute; top:10px; right:15px; border:none; background:none; font-size:1.5rem; cursor:pointer;">×</button>
+            <h2 style="color:#2e7d32;">🌱 Kodlama Bahçesi</h2>
+            <p>Kaynak kodlara ulaşmak ister misin?</p>
+            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun4.html" target="_blank" 
+               style="display:block; background:#333; color:white; padding:10px; border-radius:10px; text-decoration:none; margin:10px 0;">
+                🐙 GitHub Kaynak Kodu
+            </a>
+            <a href="https://app.talent14.com/codeEditor" target="_blank" 
+               style="display:block; background:#673ab7; color:white; padding:10px; border-radius:10px; text-decoration:none;">
+                ✨ Talent14 Editörü
+            </a>
         </div>
     </div>
 
     <script>
-        // --- TAM EKRAN ---
+        // --- TAM EKRAN FONKSİYONU ---
         function toggleFullScreen() {
-            const btn = document.getElementById('full-btn');
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                btn.innerHTML = "⛶ KÜÇÜLT";
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
-                    btn.innerHTML = "⛶ TAM EKRAN";
                 }
             }
         }
 
-        // --- OYUN VERİLERİ ---
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙'; 
+                btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶'; 
+                btnText.innerText = 'TAM EKRAN';
+            }
+        });
+
+        // --- OYUN VERİLERİ (Senaryolar) ---
         const levels = [
-            { name: "EKMEK", price: 20, desc: "Fiyatın 1/10'u (KDV)", answer: 2 }, // 20 / 10 = 2
-            { name: "ÇİKOLATA", price: 50, desc: "Fiyatın %10'u (KDV)", answer: 5 }, // 50 * 0.10 = 5
-            { name: "DETERJAN", price: 200, desc: "Fiyatın %20'si (KDV)", answer: 40 }, // 200 * 0.20 = 40
-            { name: "KİTAP", price: 100, desc: "Fiyatın 1/100'ü (Vergi)", answer: 1 }, // 100 / 100 = 1
-            { name: "OYUNCAK", price: 500, desc: "Fiyatın yarısı (1/2) (İndirim)", answer: 250 } // 500 / 2 = 250
+            {
+                desc: "12 fidanı 3 sıraya eşit dikmeliyiz.",
+                total: 12, groups: 3, icon: "🌳", groupName: "Sıra", bg: "#f1f8e9"
+            },
+            {
+                desc: "20 kitabı 4 okula eşit bağışla.",
+                total: 20, groups: 4, icon: "📚", groupName: "Okul", bg: "#fff3e0"
+            },
+            {
+                desc: "15 koli erzağı 5 aileye paylaştır.",
+                total: 15, groups: 5, icon: "📦", groupName: "Aile", bg: "#e3f2fd"
+            },
+            {
+                desc: "18 oyuncak 6 çocuğa dağıtılacak.",
+                total: 18, groups: 6, icon: "🧸", groupName: "Çocuk", bg: "#fce4ec"
+            }
         ];
 
-        let currentIdx = 0;
-        let currentInput = "";
+        let currentLvl = 0;
+        let userEstimate = 1;
+        let isRunning = false;
 
-        window.onload = loadLevel;
+        window.onload = initLevel;
 
-        function loadLevel() {
-            if (currentIdx >= levels.length) {
-                showFinalSecret();
+        function initLevel() {
+            if (currentLvl >= levels.length) {
+                endGame();
                 return;
             }
 
-            const data = levels[currentIdx];
-            
-            // UI Güncelle
-            document.getElementById('level-idx').innerText = (currentIdx + 1) + "/" + levels.length;
-            document.getElementById('p-name').innerText = data.name;
-            document.getElementById('p-price').innerText = `FİYAT: ${data.price} TL`;
-            document.getElementById('p-tax').innerText = data.desc;
-            
-            clearScreen();
+            const data = levels[currentLvl];
+            document.getElementById('mission-desc').innerText = data.desc;
+            document.getElementById('total-resource').innerText = data.total;
+            document.getElementById('field').style.backgroundColor = data.bg;
             document.getElementById('feedback').style.display = 'none';
+            document.getElementById('run-btn').disabled = false;
+            
+            userEstimate = 1;
+            updateInputDisplay();
+            createTargets(data.groups, data.groupName);
+            
+            const drone = document.getElementById('drone');
+            drone.style.top = '10px';
+            drone.style.left = '10px';
         }
 
-        function pressKey(key) {
-            if (currentInput.length < 6) { // Max karakterr
-                currentInput += key;
-                updateScreen();
+        function createTargets(count, label) {
+            const field = document.getElementById('field');
+            field.innerHTML = '<div class="drone" id="drone">🚁</div>';
+
+            for (let i = 0; i < count; i++) {
+                const zone = document.createElement('div');
+                zone.className = 'target-zone';
+                zone.id = `zone-${i}`;
+                zone.innerHTML = `<div class="target-label">${label} ${i+1}</div>`;
+                field.appendChild(zone);
             }
         }
 
-        function clearScreen() {
-            currentInput = "";
-            updateScreen();
+        function adjustValue(delta) {
+            if (isRunning) return;
+            userEstimate += delta;
+            if (userEstimate < 1) userEstimate = 1;
+            updateInputDisplay();
         }
 
-        function updateScreen() {
-            const screen = document.getElementById('screen');
-            screen.innerText = currentInput === "" ? "_" : currentInput;
+        function updateInputDisplay() {
+            document.getElementById('user-input').innerText = userEstimate;
         }
 
-        function checkAnswer() {
-            const val = parseFloat(currentInput);
-            const data = levels[currentIdx];
+        async function runSimulation() {
+            isRunning = true;
+            document.getElementById('run-btn').disabled = true;
+            
+            const data = levels[currentLvl];
+            const drone = document.getElementById('drone');
+            let remaining = data.total;
+            
+            // Dağıtım
+            for (let i = 0; i < data.groups; i++) {
+                const zone = document.getElementById(`zone-${i}`);
+                const rect = zone.getBoundingClientRect();
+                const fieldRect = document.getElementById('field').getBoundingClientRect();
+                
+                const topPos = rect.top - fieldRect.top - 20;
+                const leftPos = rect.left - fieldRect.left + (rect.width/2) - 20;
+                
+                drone.style.transform = `translate(${leftPos}px, ${topPos}px)`;
+                await new Promise(r => setTimeout(r, 600));
 
-            if (val === data.answer) {
-                // Doğru
-                printReceipt(data.name, data.price, val);
-                showFeedback(true);
+                for (let k = 0; k < userEstimate; k++) {
+                    if (remaining > 0) {
+                        const item = document.createElement('div');
+                        item.className = 'item';
+                        item.innerText = data.icon;
+                        zone.appendChild(item);
+                        remaining--;
+                        document.getElementById('total-resource').innerText = remaining;
+                        await new Promise(r => setTimeout(r, 100));
+                    } else {
+                        showResult(false, "Kaynak yetmedi! Hesaplamayı kontrol et.");
+                        return;
+                    }
+                }
+            }
+
+            if (remaining === 0) {
+                if (userEstimate * data.groups === data.total) {
+                    showResult(true, "Harika! Hiç artmadı, herkese eşit düştü.");
+                }
             } else {
-                // Yanlış
-                alert("Hatalı Tutar! Lütfen hesaplamayı kontrol et.");
-                clearScreen();
+                showResult(false, `Elimizde hala ${remaining} tane kaldı! Daha fazla verebilirdik.`);
             }
         }
 
-        function printReceipt(name, price, tax) {
-            const body = document.getElementById('receipt-body');
-            const line = document.createElement('div');
-            line.className = 'receipt-line';
-            line.innerHTML = `<span>${name}</span> <span>${price.toFixed(2)} TL</span>`;
-            
-            const taxLine = document.createElement('div');
-            taxLine.className = 'receipt-line';
-            taxLine.style.color = "#999";
-            taxLine.style.fontSize = "0.8rem";
-            taxLine.innerHTML = `<span>+ Vergi/İndirim</span> <span>${tax.toFixed(2)} TL</span>`;
-
-            body.appendChild(line);
-            body.appendChild(taxLine);
-            
-            // Otomatik scroll
-            body.scrollTop = body.scrollHeight;
-        }
-
-        function showFeedback(isSuccess) {
+        function showResult(success, msg) {
+            isRunning = false;
             const fb = document.getElementById('feedback');
             const title = document.getElementById('fb-title');
-            const msg = document.getElementById('fb-msg');
-            const nextBtn = document.getElementById('next-btn');
+            const message = document.getElementById('fb-msg');
+            const icon = document.getElementById('fb-icon');
+            const btn = fb.querySelector('button');
 
-            fb.style.display = 'flex';
-
-            if (currentIdx === levels.length - 1) {
-                title.innerText = "KASA KAPANDI!";
-                msg.innerText = "Günün kahramanı sensin. İşte şifre parçan:";
-                document.getElementById('secret-card').style.display = 'block';
-                nextBtn.innerText = "ANA MENÜYE DÖN";
-                nextBtn.onclick = () => window.location.href = 'index.html';
+            if (success) {
+                icon.innerText = "🎉";
+                title.innerText = "GÖREV BAŞARILI!";
+                title.style.color = "#43a047";
+                btn.innerText = "Sonraki Seviye ▶";
+                btn.onclick = nextLevel;
             } else {
-                title.innerText = "İŞLEM TAMAM";
-                msg.innerText = "Fiş başarıyla kesildi.";
-                document.getElementById('secret-card').style.display = 'none';
-                nextBtn.innerText = "SIRADAKİ ÜRÜN ▶";
-                nextBtn.onclick = nextLevel;
+                icon.innerText = "⚠️";
+                title.innerText = "HESAP HATASI";
+                title.style.color = "#e65100";
+                btn.innerText = "Tekrar Dene ↺";
+                btn.onclick = () => { initLevel(); };
             }
+            
+            message.innerText = msg;
+            setTimeout(() => { fb.style.display = 'flex'; }, 500);
         }
 
         function nextLevel() {
-            currentIdx++;
-            loadLevel();
+            currentLvl++;
+            initLevel();
         }
 
-        function showFinalSecret() {
-            // Güvenlik
+        function endGame() {
+            const fb = document.getElementById('feedback');
+            fb.style.display = 'flex';
+            document.getElementById('fb-icon').innerText = "🏆";
+            document.getElementById('fb-title').innerText = "İYİLİK ELÇİSİ";
+            document.getElementById('fb-msg').innerText = "Simülasyon tamamlandı. Adaletli dağıtmayı öğrendin!";
+            const btn = fb.querySelector('button');
+            btn.innerText = "Ana Menüye Dön";
+            btn.onclick = () => window.location.href = "index.html";
         }
 
-        // --- KODLAMA MODAL ---
-        function openCodeModal() { document.getElementById('codeModal').style.display = 'flex'; }
-        function closeCodeModal() { document.getElementById('codeModal').style.display = 'none'; }
-        document.getElementById('codeModal').addEventListener('click', function(e) {
-            if(e.target === this) closeCodeModal();
-        });
+        function openCodeModal() {
+            document.getElementById('codeModal').style.display = 'flex';
+        }
+        function closeCodeModal() {
+            document.getElementById('codeModal').style.display = 'none';
+        }
 
     </script>
 </body>

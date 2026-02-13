@@ -3,389 +3,383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kesir Fabrikası - Görev 1</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <title>Kutup Operasyonu - MAT.5.1.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- GENEL AYARLAR (FABRİKA TEMASI) --- */
+        /* --- GENEL TEMA: BUZUL / OKYANUS --- */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Roboto Mono', monospace;
-            background-color: #2c3e50;
-            /* Endüstriyel Izgara Arkaplan */
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #83a4d4 0%, #b6fbff 100%); /* Buz Mavisi */
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #ecf0f1;
             overflow: hidden;
+            color: #2c3e50;
         }
 
-        /* --- ÜST BUTON GRUBU --- */
+        /* --- ÜST BUTONLAR --- */
         .top-bar {
             position: absolute;
             top: 20px;
-            width: 95%;
+            width: 90%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 50;
-            pointer-events: none; /* Aradaki boşluk tıklamayı engellemesin */
+            z-index: 10;
         }
 
+        /* Sağ tarafı gruplamak için */
         .right-group {
             display: flex;
             gap: 10px;
-            pointer-events: auto;
         }
 
-        .top-btn {
-            padding: 8px 20px; border-radius: 5px;
-            font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem;
-            text-decoration: none; cursor: pointer;
-            transition: all 0.3s; letter-spacing: 1px;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
-            border: none;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: auto;
-        }
-
-        .home-btn { 
-            background: #e67e22; color: white; border: 2px solid #d35400; 
-        }
-        .code-btn { 
-            background: #3498db; color: white; border: 2px solid #2980b9; 
-        }
-        .full-btn {
-            background: #95a5a6; color: white; border: 2px solid #7f8c8d;
-        }
-
-        .top-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.3); }
-        .top-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.3); }
-
-        /* --- OYUN KONSOLU --- */
-        .console-container {
-            width: 90%; max-width: 600px;
-            background: #34495e;
-            border: 4px solid #7f8c8d;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            text-align: center;
-            position: relative;
-        }
-
-        /* Üst Panel: Hedef */
-        .target-display {
-            background: #000;
-            color: #2ecc71; /* Terminal Yeşili */
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 2px solid #555;
-            text-shadow: 0 0 10px rgba(46, 204, 113, 0.7);
-        }
-
-        .fraction { display: inline-block; vertical-align: middle; text-align: center; font-size: 1.8rem; }
-        .frac-top { border-bottom: 2px solid #2ecc71; display: block; padding: 0 5px; }
-        .frac-bottom { display: block; padding: 0 5px; }
-
-        /* Görselleştirme Alanı (Tüp/Bar) */
-        .tank-container {
-            width: 100%; height: 60px;
-            background: #2c3e50;
-            border: 3px solid #95a5a6;
-            border-radius: 30px;
-            position: relative;
-            margin-bottom: 30px;
-            overflow: hidden;
-            box-shadow: inset 0 5px 10px rgba(0,0,0,0.5);
-        }
-
-        /* Dolum Çubuğu */
-        .liquid {
-            height: 100%; width: 0%;
-            background: repeating-linear-gradient(
-                45deg,
-                #f39c12,
-                #f39c12 10px,
-                #e67e22 10px,
-                #e67e22 20px
-            );
-            transition: width 0.3s cubic-bezier(0.4, 2.5, 0.55, 0.6); /* Sıçrama efekti */
-            border-right: 2px solid #fff;
-        }
-
-        /* Bölmeler (Grid) */
-        .grid-lines {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            border: 2px solid white;
+            color: #0d47a1;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
             display: flex;
-        }
-        .grid-segment {
-            flex: 1; border-right: 1px dashed rgba(255,255,255,0.3); height: 100%;
-        }
-        .grid-segment:last-child { border-right: none; }
-
-        /* Kontrol Paneli */
-        .control-panel {
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, background 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
         }
 
-        .add-btn {
-            background: #27ae60; color: white;
-            border: none; border-radius: 50%;
-            width: 80px; height: 80px;
-            font-size: 2rem; cursor: pointer;
-            box-shadow: 0 5px 0 #1e8449, 0 10px 20px rgba(0,0,0,0.3);
-            transition: all 0.1s;
-            display: flex; align-items: center; justify-content: center;
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            background: white;
         }
 
-        .add-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #1e8449; }
-
-        .btn-label { font-size: 0.9rem; color: #bdc3c7; margin-top: 5px; }
-
-        /* Mevcut Durum Metni */
-        .current-status {
-            font-size: 1.2rem; color: #ecf0f1; margin-top: 15px; font-weight: bold;
+        /* --- OYUN ALANI --- */
+        .game-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 100, 200, 0.2);
+            border: 5px solid #e1f5fe;
+            position: relative;
         }
 
-        /* FEEDBACK OVERLAY */
-        .feedback-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; color: white; text-align: center; border-radius: 15px;
+        /* Karakter ve Görsel */
+        .character-area {
+            font-size: 5rem;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .next-btn {
-            margin-top: 20px; padding: 10px 30px; background: #3498db; color: white;
-            border: none; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-weight: bold;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* ŞİFRE KARTI */
-        .secret-card {
-            border: 2px dashed #f1c40f; padding: 20px; border-radius: 10px; background: rgba(241, 196, 15, 0.1);
-            margin-top: 15px; display: none;
+        /* Soru Alanı */
+        .scenario-text {
+            font-size: 1.1rem;
+            color: #455a64;
+            background: #e1f5fe;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #039be5;
+            text-align: left;
         }
-        .secret-letter { font-size: 3rem; color: #f1c40f; font-weight: bold; display: block; }
 
-        /* MODAL */
+        .math-problem {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            color: #0277bd;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        /* Seçenekler */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #b3e5fc;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            color: #0277bd;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .option-btn:hover {
+            background: #03a9f4;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* --- MODALLAR --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); z-index: 1000;
-            display: none; align-items: center; justify-content: center;
-        }
-        .modal-card {
-            background: #fff; padding: 30px; border-radius: 10px; max-width: 400px;
-            text-align: center; color: #333; position: relative;
-        }
-        .close-btn {
-            position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; border: none; background: none;
-        }
-        .action-link {
-            display: block; background: #333; color: white; padding: 10px; border-radius: 5px; text-decoration: none; margin: 10px 0;
+            background: rgba(0,0,0,0.8); z-index: 1000; display: none;
+            align-items: center; justify-content: center;
         }
 
+        .modal-card {
+            background: white; width: 90%; max-width: 500px;
+            border-radius: 20px; padding: 30px; text-align: center;
+            position: relative; border: 4px solid #039be5;
+        }
+
+        .feedback-correct { color: #2e7d32; }
+        .feedback-wrong { color: #c62828; }
+
+        .next-btn {
+            background: #0277bd; color: white; border: none; padding: 10px 30px;
+            font-size: 1.2rem; border-radius: 10px; cursor: pointer; margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .math-problem { font-size: 1.5rem; }
+            .top-bar { flex-direction: column; gap: 10px; }
+            .right-group { width: 100%; justify-content: space-between; }
+        }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <a href="index.html" class="top-btn home-btn">⌂ ANA MENÜ</a>
+        <a href="index.html" class="nav-btn">
+            <span>🏠</span> Ana Menü
+        </a>
+
         <div class="right-group">
-            <button onclick="openCodeModal()" class="top-btn code-btn">⌨ KODLA</button>
-            <button onclick="toggleFullScreen()" id="full-btn" class="top-btn full-btn">⛶ TAM EKRAN</button>
+            <button onclick="openCodeModal()" class="nav-btn">
+                <span>💻</span> KODLA
+            </button>
+            <button onclick="toggleFullScreen()" class="nav-btn" id="screenBtn">
+                <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
+            </button>
         </div>
     </div>
 
-    <div class="console-container">
-        <div style="text-align: right; font-size: 0.8rem; color: #95a5a6; margin-bottom: 5px;">ÜRETİM HATTI: <span id="level-indicator">1/5</span></div>
+    <div class="game-container" id="game-screen">
+        <div class="character-area">🐻‍❄️ 🧊</div>
         
-        <div class="target-display">
-            HEDEF: 
-            <div class="fraction">
-                <span class="frac-top" id="target-num">3</span>
-                <span class="frac-bottom" id="target-denom">5</span>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color:#0277bd; font-weight:bold;">
+            <span>Görev: <span id="q-num">1</span>/5</span>
+            <span>Puan: <span id="score">0</span></span>
+        </div>
+
+        <div class="scenario-text" id="scenario">
+            Senaryo yükleniyor...
+        </div>
+
+        <div class="math-problem" id="problem">
+            İşlem yükleniyor...
+        </div>
+
+        <div class="options-grid" id="options-area">
             </div>
-             ÜRET
+    </div>
+
+    <div class="modal-overlay" id="feedbackModal">
+        <div class="modal-card">
+            <h2 id="fb-title" class="feedback-correct">HARİKA!</h2>
+            <div style="font-size: 3rem;" id="fb-icon">✅</div>
+            <p id="fb-msg" style="font-size: 1.1rem; color:#555; margin: 15px 0;">
+                Buzulların erimesini engelledin!
+            </p>
+            <button class="next-btn" onclick="nextQuestion()">Devam Et ▶</button>
         </div>
+    </div>
 
-        <div class="tank-container">
-            <div class="grid-lines" id="grid-lines">
-                </div>
-            <div class="liquid" id="liquid-bar"></div>
-        </div>
-
-        <div class="current-status">
-            MEVCUT: <span id="current-text">0/5</span>
-        </div>
-
-        <div class="control-panel">
-            <button class="add-btn" onclick="addUnit()">+</button>
-            <div class="btn-label">BİRİM KESİR EKLE <br> (<span id="unit-val">1/5</span>)</div>
-        </div>
-
-        <div class="feedback-overlay" id="feedback">
-            <h1 id="fb-icon" style="font-size: 4rem; margin:0;">✅</h1>
-            <h2 id="fb-title">ÜRETİM TAMAMLANDI!</h2>
-            <p id="fb-msg">Birim kesirleri birleştirerek hedefe ulaştın.</p>
-            
-            <div class="secret-card" id="secret-card">
-                ŞİFRE PARÇASI BULUNDU:
-                <span class="secret-letter">D</span>
-            </div>
-
-            <button class="next-btn" id="next-btn" onclick="nextLevel()">SONRAKİ SİPARİŞ ▶</button>
+    <div class="modal-overlay" id="endModal">
+        <div class="modal-card">
+            <h2 style="color:#0277bd;">GÖREV TAMAMLANDI! 🏆</h2>
+            <p>Doğa dostu bir matematikçisin.</p>
+            <h1 id="final-score" style="font-size: 3rem; margin: 10px 0;">0</h1>
+            <p>Puan topladın.</p>
+            <a href="index.html" class="next-btn" style="text-decoration: none; display:inline-block;">Ana Menüye Dön</a>
         </div>
     </div>
 
     <div class="modal-overlay" id="codeModal">
-        <div class="modal-card">
-            <button class="close-btn" onclick="closeCodeModal()">×</button>
-            <h2 style="color:#2980b9;">🛠 Fabrika Yazılımı</h2>
-            <p>Üretim bandını kodlarla yönet!</p>
-            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun1.html" target="_blank" class="action-link" style="background:#333;">🐙 GitHub Kaynak Kodu</a>
-            <a href="https://app.talent14.com/codeEditor" target="_blank" class="action-link" style="background:#8e44ad;">✨ Talent14 Editörü</a>
+        <div class="modal-card" style="border-color: #238636;">
+            <button onclick="closeCodeModal()" style="position:absolute; top:10px; right:15px; border:none; background:none; font-size:1.5rem; cursor:pointer;">×</button>
+            <h2 style="color:#238636;">🚀 Kodlama Laboratuvarı</h2>
+            <p>Bu oyunun kodlarını incelemek ister misin?</p>
+            
+            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun1.html" target="_blank" 
+               style="display:block; background:#333; color:white; padding:12px; border-radius:10px; text-decoration:none; margin:10px 0; font-weight:bold;">
+                🐙 GitHub Kaynak Kodu
+            </a>
+            <a href="https://app.talent14.com/codeEditor" target="_blank" 
+               style="display:block; background:#673ab7; color:white; padding:12px; border-radius:10px; text-decoration:none; font-weight:bold;">
+                ✨ Talent14 Editörü
+            </a>
         </div>
     </div>
 
     <script>
-        // --- TAM EKRAN KONTROLÜ ---
+        // --- TAM EKRAN FONKSİYONU ---
         function toggleFullScreen() {
-            const btn = document.getElementById('full-btn');
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                btn.innerHTML = "⛶ KÜÇÜLT";
+                // Tam ekrana geç
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Hata: ${err.message}`);
+                });
             } else {
+                // Tam ekrandan çık
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
-                    btn.innerHTML = "⛶ TAM EKRAN";
                 }
             }
         }
 
-        // --- OYUN VERİLERİ ---
-        const levels = [
-            { num: 3, denom: 5 },  // 3/5
-            { num: 2, denom: 4 },  // 2/4 (Yarım)
-            { num: 5, denom: 6 },  // 5/6
-            { num: 4, denom: 4 },  // 4/4 (Tam)
-            { num: 7, denom: 8 }   // 7/8
+        // Ekran durumu değiştiğinde butonu güncelle (ESC tuşu vb. için)
+        document.addEventListener('fullscreenchange', (event) => {
+            const btnIcon = document.getElementById('screenIcon');
+            const btnText = document.getElementById('screenText');
+            
+            if (document.fullscreenElement) {
+                btnIcon.innerHTML = '↙'; // Küçültme ikonu
+                btnText.innerText = 'KÜÇÜLT';
+            } else {
+                btnIcon.innerHTML = '⛶'; // Büyütme ikonu
+                btnText.innerText = 'TAM EKRAN';
+            }
+        });
+        // ------------------------------
+
+        // --- SENARYOLAR VE SORULAR ---
+        const questions = [
+            {
+                scenario: "Küresel ısınma nedeniyle kutup foklarının yaşam alanları azalmaktadır. Son 10 yılda yaklaşık 45.485 futbol sahası kadar ve sadece bu yıl 51.373 futbol sahası kadar buzul erimiştir.",
+                problem: "Toplam ne kadar buzul eridi?",
+                options: ["96.858", "95.758", "96.758", "97.858"],
+                correct: 0,
+                msg: "Doğru! İki değeri toplayarak toplam erimeyi buldun: 45.485 + 51.373 = 96.858"
+            },
+            {
+                scenario: "Bir çevre kuruluşu, kutuplarda 75.000 fokun yaşadığını tahmin ediyordu. Ancak yapılan sayımda 62.450 fok olduğu görüldü.",
+                problem: "Tahmin ile gerçek arasındaki fark kaçtır?",
+                options: ["13.550", "12.550", "12.450", "13.450"],
+                correct: 1,
+                msg: "Tebrikler! Çıkarma işlemiyle farkı buldun: 75.000 - 62.450 = 12.550"
+            },
+            {
+                scenario: "Antarktika'ya araştırma yapmak için 12.500 kg yiyecek ve 18.250 kg teknik ekipman gönderildi.",
+                problem: "Toplam yük kaç kg'dır?",
+                options: ["30.750", "30.500", "29.750", "31.000"],
+                correct: 0,
+                msg: "Harika! Toplam yük: 12.500 + 18.250 = 30.750 kg"
+            },
+            {
+                scenario: "Bir buzdağının kütlesi başlangıçta 84.600 tondu. Yaz mevsiminde 23.400 tonu eridi.",
+                problem: "Geriye kaç ton buz kaldı?",
+                options: ["60.200", "61.200", "59.200", "61.000"],
+                correct: 1,
+                msg: "Doğru! Kalan miktar: 84.600 - 23.400 = 61.200 ton"
+            },
+            {
+                scenario: "İki çevre gemisi yola çıktı. Birinci gemi 24.150 km, ikinci gemi ise 32.840 km yol kat etti.",
+                problem: "İki gemi toplam kaç km yol gitti?",
+                options: ["56.890", "56.990", "57.090", "55.990"],
+                correct: 1,
+                msg: "Mükemmel! Toplam yol: 24.150 + 32.840 = 56.990 km"
+            }
         ];
 
-        let currentLevelIdx = 0;
-        let currentFill = 0; // Kaç birim eklendi
+        let currentIdx = 0;
+        let score = 0;
 
-        window.onload = initLevel;
+        // Oyunu Başlat
+        window.onload = loadQuestion;
 
-        function initLevel() {
-            if (currentLevelIdx >= levels.length) {
-                showFinalSecret();
-                return;
-            }
+        function loadQuestion() {
+            const q = questions[currentIdx];
+            document.getElementById('q-num').innerText = currentIdx + 1;
+            document.getElementById('score').innerText = score;
+            document.getElementById('scenario').innerText = q.scenario;
+            document.getElementById('problem').innerText = q.problem;
 
-            const data = levels[currentLevelIdx];
-            currentFill = 0;
+            const optsDiv = document.getElementById('options-area');
+            optsDiv.innerHTML = ""; // Temizle
 
-            // UI Güncelle
-            document.getElementById('level-indicator').innerText = (currentLevelIdx + 1) + "/" + levels.length;
-            document.getElementById('target-num').innerText = data.num;
-            document.getElementById('target-denom').innerText = data.denom;
-            document.getElementById('unit-val').innerText = "1/" + data.denom;
-            document.getElementById('current-text').innerText = "0/" + data.denom;
-            
-            // Barı Sıfırla
-            document.getElementById('liquid-bar').style.width = "0%";
-            document.getElementById('feedback').style.display = 'none';
-
-            // Grid Çizgilerini Oluştur (Payda kadar bölme)
-            createGrid(data.denom);
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(idx);
+                optsDiv.appendChild(btn);
+            });
         }
 
-        function createGrid(segments) {
-            const container = document.getElementById('grid-lines');
-            container.innerHTML = "";
-            for (let i = 0; i < segments; i++) {
-                const div = document.createElement('div');
-                div.className = 'grid-segment';
-                container.appendChild(div);
-            }
-        }
-
-        function addUnit() {
-            const data = levels[currentLevelIdx];
-            
-            if (currentFill < data.num) {
-                currentFill++;
-                updateVisuals(data);
-
-                if (currentFill === data.num) {
-                    setTimeout(() => {
-                        showSuccess();
-                    }, 500); // Animasyon bitince göster
-                }
-            } else {
-                // Fazla basarsa (opsiyonel: hata sesi veya sallanma efekti)
-            }
-        }
-
-        function updateVisuals(data) {
-            // Barı doldur
-            const percent = (currentFill / data.denom) * 100;
-            document.getElementById('liquid-bar').style.width = percent + "%";
-            
-            // Metni güncelle
-            document.getElementById('current-text').innerText = currentFill + "/" + data.denom;
-        }
-
-        function showSuccess() {
-            const fb = document.getElementById('feedback');
+        function checkAnswer(selectedIdx) {
+            const q = questions[currentIdx];
+            const modal = document.getElementById('feedbackModal');
             const title = document.getElementById('fb-title');
             const msg = document.getElementById('fb-msg');
-            const nextBtn = document.getElementById('next-btn');
+            const icon = document.getElementById('fb-icon');
 
-            fb.style.display = 'flex';
-            
-            if (currentLevelIdx === levels.length - 1) {
-                // Son level
-                title.innerText = "GÖREV TAMAMLANDI!";
-                msg.innerText = "Tüm siparişler hazırlandı.İşte şifre parçan:";
-                document.getElementById('secret-card').style.display = 'block';
-                nextBtn.innerText = "ANA MENÜYE DÖN";
-                nextBtn.onclick = () => window.location.href = "index.html";
+            if (selectedIdx === q.correct) {
+                score += 20;
+                title.innerText = "HARİKA!";
+                title.className = "feedback-correct";
+                icon.innerText = "✅";
+                msg.innerText = q.msg;
             } else {
-                title.innerText = "ÜRETİM BAŞARILI!";
-                msg.innerText = "Birim kesirler birleşti ve ürün hazır.";
-                document.getElementById('secret-card').style.display = 'none';
-                nextBtn.innerText = "SONRAKİ SİPARİŞ ▶";
-                nextBtn.onclick = nextLevel;
+                title.innerText = "DİKKAT!";
+                title.className = "feedback-wrong";
+                icon.innerText = "⚠️";
+                msg.innerText = "Yanlış hesaplama. Doğru cevap: " + q.options[q.correct];
+            }
+            modal.style.display = 'flex';
+        }
+
+        function nextQuestion() {
+            document.getElementById('feedbackModal').style.display = 'none';
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                endGame();
             }
         }
 
-        function nextLevel() {
-            currentLevelIdx++;
-            initLevel();
+        function endGame() {
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('endModal').style.display = 'flex';
         }
 
-        // --- KODLAMA MODAL ---
+        // Kodlama Modalı İşlemleri
         function openCodeModal() {
             document.getElementById('codeModal').style.display = 'flex';
         }
         function closeCodeModal() {
             document.getElementById('codeModal').style.display = 'none';
         }
-        document.getElementById('codeModal').addEventListener('click', function(e) {
-            if(e.target === this) closeCodeModal();
-        });
-
     </script>
 </body>
 </html>
