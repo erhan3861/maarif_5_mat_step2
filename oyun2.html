@@ -3,476 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarih Avcısı - Görev 2</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+Egyptian+Hieroglyphs&display=swap" rel="stylesheet">
+    <title>Zıplayan Kesirler - Görev 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* --- GENEL AYARLAR --- */
+        /* --- GENEL AYARLAR (DOĞA/GÖLET TEMASI) --- */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Cinzel', serif;
-            background-color: #d2b48c;
+            font-family: 'Nunito', sans-serif;
+            background-color: #4fc3f7;
+            /* Su Efekti */
             background-image: 
-                radial-gradient(circle at 50% 50%, #e6cfa1 0%, #b38b59 100%),
-                url('https://www.transparenttextures.com/patterns/wall-4-light.png');
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.2) 0%, transparent 20%);
+            background-size: 200px 200px;
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #3e2723;
+            color: #333;
             overflow: hidden;
         }
 
-        /* --- SAĞ ÜST BUTON GRUBU --- */
-        .top-right-group {
+        /* --- ÜST BUTON GRUBU --- */
+        .top-bar {
             position: absolute;
             top: 20px;
-            right: 20px;
+            width: 95%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .right-group {
             display: flex;
             gap: 10px;
-            z-index: 50;
+            pointer-events: auto;
         }
 
-        /* --- ORTAK BUTON STİLİ --- */
-        .action-btn {
-            background: linear-gradient(135deg, #d4af37, #aa8c2c); /* Altın Sarısı */
-            color: #3e2723;
-            border: 2px solid #fff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-family: 'Segoe UI', sans-serif;
-            font-weight: 800;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            text-decoration: none;
+        .top-btn {
+            padding: 8px 20px; border-radius: 20px;
+            font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.9rem;
+            text-decoration: none; cursor: pointer;
+            transition: all 0.3s; border: none;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: auto; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
         }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px #ffd700;
-            background: #ffd700;
-        }
+        .home-btn { background: #fff; color: #0288d1; border: 2px solid #0288d1; }
+        .code-btn { background: #8e24aa; color: white; border: 2px solid #6a1b9a; }
+        .full-btn { background: #00897b; color: white; border: 2px solid #00695c; }
 
-        /* --- ANA MENÜ BUTONU (SOL ÜST) --- */
-        .back-btn-ancient {
-            position: absolute;
-            top: 20px; 
-            left: 20px;
-            text-decoration: none;
-            color: #3e2723;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(5px);
-            font-size: 0.95rem;
-            border: 2px solid #5d4037;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: all 0.3s;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            box-shadow: 3px 3px 0px #5d4037;
-        }
+        .top-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
+        .top-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
 
-        .back-btn-ancient:hover { 
-            transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0px #5d4037;
-            background: #fff;
-        }
-
-        /* --- OYUN ALANI (TABLET) --- */
-        .stone-tablet {
-            background: #c5a073;
-            width: 90%;
-            max-width: 600px;
-            padding: 40px;
-            border-radius: 10px;
-            border: 8px solid #5d4037;
-            box-shadow: 
-                inset 0 0 50px rgba(0,0,0,0.3),
-                0 20px 50px rgba(0,0,0,0.5);
+        /* --- OYUN ALANI --- */
+        .game-area {
+            width: 90%; max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 5px solid #0288d1;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 100, 200, 0.3);
             text-align: center;
             position: relative;
         }
-        
-        /* Vida detayları */
-        .stone-tablet::before, .stone-tablet::after {
-            content: '☥'; /* Ankh sembolü */
-            position: absolute; top: 10px;
-            font-size: 2rem; color: #5d4037; opacity: 0.5;
-        }
-        .stone-tablet::before { left: 15px; }
-        .stone-tablet::after { right: 15px; }
 
-        .level-badge {
-            background: #5d4037;
-            color: #ffd700;
-            display: inline-block;
-            padding: 5px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            border: 2px solid #ffd700;
-        }
-
-        /* Hiyeroglif Alanı */
-        .hieroglyph-display {
-            font-size: 3rem;
-            margin: 20px 0;
-            min-height: 80px;
-            color: #3e2723;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.4);
-            letter-spacing: 5px;
-            font-family: 'Times New Roman', serif; /* Fallback */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .symbol-group {
-            display: inline-block;
-            margin: 0 10px;
-            border-bottom: 2px solid rgba(93, 64, 55, 0.2);
-        }
-
-        .input-area {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        input[type="number"] {
+        /* Görev Ekranı */
+        .mission-box {
+            background: #e1f5fe;
+            border: 2px dashed #0288d1;
             padding: 15px;
-            font-size: 1.5rem;
-            width: 150px;
-            text-align: center;
-            border: 3px solid #5d4037;
-            background: #fdf5e6;
-            color: #3e2723;
-            border-radius: 5px;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            outline: none;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            display: inline-block;
         }
 
-        .check-btn {
-            background: #5d4037;
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-            transition: background 0.2s;
-            border-bottom: 4px solid #3e2723;
-        }
+        .mission-title { font-size: 1rem; color: #0277bd; font-weight: 800; margin-bottom: 5px; }
+        .target-fraction { font-size: 2.5rem; font-weight: 900; color: #01579b; font-family: 'Fredoka', sans-serif; }
 
-        .check-btn:active {
-            transform: translateY(4px);
-            border-bottom: 0;
-        }
-
-        /* --- BİLGİ KARTI (MISIR SAYILARI) --- */
-        .cheat-sheet {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            background: rgba(255,255,255,0.3);
-            padding: 10px;
-            border-radius: 10px;
+        /* --- SAYI DOĞRUSU / GÖLET --- */
+        .pond-container {
+            position: relative;
+            height: 150px;
+            margin: 20px 0;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            align-items: center;
         }
-        .cheat-item span { font-size: 1.5rem; display: block; }
 
-        /* --- FEEDBACK --- */
+        /* Çizgi */
+        .number-line {
+            position: absolute;
+            top: 50%; left: 5%; right: 5%;
+            height: 8px;
+            background: #5d4037; /* Dal rengi */
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        /* Baş ve Son Etiketleri */
+        .line-marker {
+            position: absolute; top: 60%; font-weight: bold; font-size: 1.2rem; color: #5d4037;
+        }
+        .marker-0 { left: 4%; }
+        .marker-1 { right: 4%; }
+
+        /* Nilüfer Yaprakları (Tıklanabilir Alanlar) */
+        .lily-pad {
+            width: 60px; height: 40px;
+            background: #66bb6a;
+            border-radius: 50%;
+            border: 3px solid #2e7d32;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: transparent; /* Başta gizli */
+            font-weight: bold;
+        }
+
+        .lily-pad:hover { transform: translate(-50%, -50%) scale(1.2); background: #81c784; }
+        .lily-pad.revealed { color: #1b5e20; background: #fff; border-color: #66bb6a; }
+
+        /* KURBAĞA */
+        .frog {
+            font-size: 3.5rem;
+            position: absolute;
+            top: 10%; /* Çizginin üstünde */
+            left: 5%; /* 0 Noktası */
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), top 0.3s ease; /* Zıplama efekti */
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3));
+        }
+
+        .jump-anim {
+            animation: jumpKeyframe 0.6s ease;
+        }
+
+        @keyframes jumpKeyframe {
+            0% { top: 10%; }
+            50% { top: -20%; } /* Havaya zıpla */
+            100% { top: 10%; }
+        }
+
+        /* Feedback Overlay */
         .feedback-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 10;
-            color: #ffd700; text-align: center; font-family: 'Cinzel', serif;
+            background: rgba(255,255,255,0.95); display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; border-radius: 25px;
         }
 
-        /* --- POPUP MODAL --- */
+        .next-btn {
+            margin-top: 20px; padding: 12px 30px; background: #0288d1; color: white;
+            border: none; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(2, 136, 209, 0.3);
+        }
+
+        /* Şifre Kartı */
+        .secret-card {
+            border: 2px dashed #ff9800; padding: 20px; border-radius: 15px; 
+            background: #fff3e0; margin-top: 15px; display: none;
+        }
+        .secret-letter { font-size: 4rem; color: #e65100; font-weight: 900; display: block; }
+
+        /* KODLAMA MODAL */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            background: rgba(0, 0, 0, 0.8); z-index: 1000;
+            display: none; align-items: center; justify-content: center;
         }
-
         .modal-card {
-            background: #1a1a1a;
-            width: 90%;
-            max-width: 500px;
-            border: 2px solid #ffd700;
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-            transform: translateY(-50px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            background: #fff; padding: 30px; border-radius: 20px; max-width: 450px;
+            text-align: center; color: #333; position: relative; border-bottom: 5px solid #8e24aa;
         }
-
-        .modal-header {
-            font-size: 1.5rem; color: #ffd700; margin-bottom: 20px;
-            text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 15px;
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; border: none; background: none; color: #888;
         }
-
-        .close-modal-btn {
-            position: absolute; top: 15px; right: 20px; background: none; border: none;
-            color: #888; font-size: 1.5rem; cursor: pointer;
-        }
-        .close-modal-btn:hover { color: #f44336; }
-
-        .step-item {
-            background: #333; border: 1px solid #555; padding: 15px;
-            border-radius: 10px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px;
-            text-align: left;
-        }
-        .step-icon { font-size: 2rem; }
-        .step-content h4 { margin: 0; color: #fff; }
-        .step-content p { margin: 0; font-size: 0.9rem; color: #aaa; }
-        
         .action-link {
-            display: inline-block; margin-top: 5px; padding: 8px 15px;
-            border-radius: 15px; text-decoration: none; color: white; font-weight: bold; font-size: 0.8rem;
+            display: block; background: #333; color: white; padding: 12px; border-radius: 10px; text-decoration: none; margin: 10px 0; font-weight: bold;
         }
+
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-btn-ancient">
-        <span>🏛️</span> Ana Menü
-    </a>
-
-    <div class="top-right-group">
-        <button onclick="openCodeModal()" class="action-btn">
-            <span>📜</span> KODLA
-        </button>
-        <button onclick="toggleFullScreen()" class="action-btn" id="screenBtn">
-            <span id="screenIcon">⛶</span> <span id="screenText">TAM EKRAN</span>
-        </button>
-        
+    <div class="top-bar">
+        <a href="index.html" class="top-btn home-btn">⌂ ANA MENÜ</a>
+        <div class="right-group">
+            <button onclick="openCodeModal()" class="top-btn code-btn">⌨ KODLA</button>
+            <button onclick="toggleFullScreen()" id="full-btn" class="top-btn full-btn">⛶ TAM EKRAN</button>
+        </div>
     </div>
 
-    <div class="stone-tablet">
-        <div class="level-badge">Seviye: <span id="level-display">1</span></div>
-        
-        <h2>Antik Şifreyi Çöz</h2>
-        <p>Aşağıdaki Mısır sayıları modern dünyada kaç ediyor?</p>
+    <div class="game-area">
+        <div style="text-align: right; color: #0288d1; font-weight: bold; margin-bottom: 10px;">SEVİYE: <span id="level-display">1/5</span></div>
 
-        <div class="hieroglyph-display" id="hieroglyphs">
-            </div>
-
-        <div class="input-area">
-            <input type="number" id="user-input" placeholder="?" autocomplete="off">
-            <button class="check-btn" onclick="checkAnswer()">KONTROL ET</button>
+        <div class="mission-box">
+            <div class="mission-title">Zıpzıp'ı bu kesre götür:</div>
+            <div class="target-fraction" id="target-frac">1/2</div>
         </div>
 
-        <div class="cheat-sheet">
-            <div class="cheat-item"><span>&#124;</span>1</div>
-            <div class="cheat-item"><span>&#8745;</span>10</div>
-            <div class="cheat-item"><span>&#64;</span>100</div> <div class="cheat-item"><span>&#9880;</span>1000</div>
-            <div class="cheat-item"><span>&#9757;</span>10.000</div>
+        <div class="pond-container" id="pond">
+            <div class="number-line"></div>
+            <span class="line-marker marker-0">0</span>
+            <span class="line-marker marker-1">1</span>
+            
+            <div class="frog" id="frog">🐸</div>
+            
+            <div id="lily-container"></div>
         </div>
+
+        <p style="color:#777; font-size:0.9rem;">Doğru nilüfer yaprağına tıkla!</p>
 
         <div class="feedback-overlay" id="feedback">
-            <h1 id="fb-title" style="font-size:3rem; margin-bottom:10px;">DOĞRU!</h1>
-            <p id="fb-msg" style="font-size:1.2rem; color:#fff;">Hazine odasının kapısı açılıyor...</p>
-            <button class="check-btn" onclick="nextLevel()" style="margin-top:20px; background:#ffd700; color:#3e2723;">Sonraki Şifre ▶</button>
+            <h1 style="font-size: 4rem; margin:0;">🎉</h1>
+            <h2 style="color:#2e7d32;" id="fb-title">HARİKA ATLAYIŞ!</h2>
+            <p id="fb-msg">Tam isabet ettirdin.</p>
+            
+            <div class="secret-card" id="secret-card">
+                ŞİFRE PARÇASI:
+                <span class="secret-letter">E</span>
+            </div>
+
+            <button class="next-btn" id="next-btn" onclick="nextLevel()">SONRAKİ SEVİYE ▶</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="codeModal">
         <div class="modal-card">
-            <button class="close-modal-btn" onclick="closeCodeModal()">×</button>
-            <div class="modal-header">📜 Tarihçi Kodlaması</div>
-            
-            <p style="color: #bbb; margin-bottom: 25px;">Tarihi kodlarla yeniden canlandır!</p>
-
-            <div class="step-item">
-                <div class="step-icon">🏺</div>
-                <div class="step-content">
-                    <h4>1. Kaynak Kodu Al</h4>
-                    <p>GitHub'dan <b>oyun2.html</b> kodunu kopyala.</p>
-                    <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun2.html" target="_blank" class="action-link" style="background:#238636;">🔗 GitHub Linki</a>
-                </div>
-            </div>
-
-            <div class="step-item">
-                <div class="step-icon">✨</div>
-                <div class="step-content">
-                    <h4>2. Editörü Aç & Yapıştır</h4>
-                    <p>Talent14 editörüne yapıştır ve hiyeroglifleri değiştir.</p>
-                    <a href="https://app.talent14.com/codeEditor" target="_blank" class="action-link" style="background:#8a4bfa;">📝 Editörü Aç</a>
-                </div>
-            </div>
+            <button class="close-btn" onclick="closeCodeModal()">×</button>
+            <h2 style="color:#8e24aa;">🐸 Oyunun Kodları</h2>
+            <p style="color:#666;">Kurbağanın zıplama mesafesini kodlarla ayarla!</p>
+            <a href="https://github.com/erhan3861/maarif_5_mat_1/blob/main/oyun2.html" target="_blank" class="action-link" style="background:#333;">🐙 GitHub Kaynak Kodu</a>
+            <a href="https://app.talent14.com/codeEditor" target="_blank" class="action-link" style="background:#8e44ad;">✨ Talent14 Editörü</a>
         </div>
     </div>
 
     <script>
-        // --- TAM EKRAN FONKSİYONU ---
+        // --- TAM EKRAN ---
         function toggleFullScreen() {
-            const btnIcon = document.getElementById('screenIcon');
-            const btnText = document.getElementById('screenText');
-
+            const btn = document.getElementById('full-btn');
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    alert(`Hata: ${err.message}`);
-                });
+                document.documentElement.requestFullscreen();
+                btn.innerHTML = "⛶ KÜÇÜLT";
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
+                    btn.innerHTML = "⛶ TAM EKRAN";
                 }
             }
         }
 
-        document.addEventListener('fullscreenchange', (event) => {
-            const btnIcon = document.getElementById('screenIcon');
-            const btnText = document.getElementById('screenText');
-            
-            if (document.fullscreenElement) {
-                btnIcon.innerHTML = '↙'; 
-                btnText.innerText = 'KÜÇÜLT';
-            } else {
-                btnIcon.innerHTML = '⛶'; 
-                btnText.innerText = 'TAM EKRAN';
-            }
-        });
-
-        // --- POPUP KONTROL ---
-        function openCodeModal() {
-            const modal = document.getElementById('codeModal');
-            const card = modal.querySelector('.modal-card');
-            modal.style.display = 'flex';
-            setTimeout(() => { modal.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 10);
-        }
-        function closeCodeModal() {
-            const modal = document.getElementById('codeModal');
-            const card = modal.querySelector('.modal-card');
-            modal.style.opacity = '0'; card.style.transform = 'translateY(-50px)';
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
-        }
-        document.getElementById('codeModal').addEventListener('click', function(e) {
-            if(e.target === this) closeCodeModal();
-        });
-
-        // --- OYUN MANTIĞI ---
-        const symbols = {
-            1: "I",        // Çubuk
-            10: "∩",       // Nal (Topuk kemiği)
-            100: "୭",      // İp kangalı (veya @)
-            1000: "🪷",    // Nilüfer (veya ⚜)
-            10000: "☝"     // İşaret parmağı
-        };
-
+        // --- OYUN VERİLERİ ---
+        // Sadece 0 ile 1 arasındaki basit kesirler (5. Sınıf Step 2)
         const levels = [
-            { num: 23, hint: "2 Onluk, 3 Birlik" },
-            { num: 145, hint: "1 Yüzlük, 4 Onluk, 5 Birlik" },
-            { num: 302, hint: "3 Yüzlük, 0 Onluk, 2 Birlik" },
-            { num: 1234, hint: "1 Binlik..." },
-            { num: 21050, hint: "2 On Binlik, 1 Binlik, 5 Onluk" }
+            { num: 1, denom: 2 }, // 1/2
+            { num: 2, denom: 3 }, // 2/3
+            { num: 3, denom: 4 }, // 3/4
+            { num: 1, denom: 3 }, // 1/3
+            { num: 4, denom: 5 }  // 4/5
         ];
 
-        let currentLvl = 0;
-        let currentTarget = 0;
+        let currentIdx = 0;
 
         window.onload = loadLevel;
 
         function loadLevel() {
-            if (currentLvl >= levels.length) {
-                endGame();
+            if (currentIdx >= levels.length) {
+                showFinalSecret();
                 return;
             }
 
-            currentTarget = levels[currentLvl].num;
-            document.getElementById('level-display').innerText = currentLvl + 1;
-            document.getElementById('user-input').value = "";
+            const data = levels[currentIdx];
+            
+            // UI Güncelle
+            document.getElementById('level-display').innerText = (currentIdx + 1) + "/" + levels.length;
+            document.getElementById('target-frac').innerText = `${data.num}/${data.denom}`;
             document.getElementById('feedback').style.display = 'none';
+            
+            // Kurbağayı Başlangıca Al
+            const frog = document.getElementById('frog');
+            frog.style.left = '5%'; // 0 noktası
+            frog.classList.remove('jump-anim');
 
-            generateHieroglyphs(currentTarget);
+            // Nilüfer Yapraklarını Oluştur
+            createPads(data.denom, data.num);
         }
 
-        function generateHieroglyphs(number) {
-            const container = document.getElementById('hieroglyphs');
-            container.innerHTML = "";
-            
-            let numStr = number.toString();
-            let len = numStr.length;
+        function createPads(denom, targetNum) {
+            const container = document.getElementById('lily-container');
+            container.innerHTML = ""; // Temizle
 
-            for (let i = 0; i < len; i++) {
-                let digit = parseInt(numStr[i]);
-                let placeVal = Math.pow(10, len - 1 - i);
+            // 0 ile 1 arasını 'denom' kadar parçaya bölüyoruz
+            // Ancak görsel olarak 0 ve 1 noktaları hariç aradaki noktaları koyacağız
+            // ya da 0 hariç hepsini koyabiliriz.
+            // Sayı doğrusu mantığında 0 (5%) ile 1 (95%) arası %90 genişlikte.
+            
+            const startPos = 5; // %
+            const totalWidth = 90; // %
+            const step = totalWidth / denom;
+
+            for (let i = 1; i <= denom; i++) {
+                const pad = document.createElement('div');
+                pad.className = 'lily-pad';
                 
-                if (digit > 0) {
-                    let group = document.createElement('div');
-                    group.className = 'symbol-group';
-                    let sym = symbols[placeVal] || "?";
-                    group.innerText = sym.repeat(digit);
-                    container.appendChild(group);
-                }
+                // Pozisyon hesapla
+                const leftPos = startPos + (step * i);
+                pad.style.left = leftPos + "%";
+                
+                // Veri ekle
+                pad.dataset.val = i; // Pay değeri (1/4, 2/4 vs.)
+                pad.onclick = () => jumpFrog(leftPos, i, targetNum);
+
+                // İçine kesri yaz (gizli)
+                pad.innerText = `${i}/${denom}`;
+
+                container.appendChild(pad);
             }
         }
 
-        function checkAnswer() {
-            let userVal = parseInt(document.getElementById('user-input').value);
+        function jumpFrog(positionPercent, clickedNum, correctNum) {
+            const frog = document.getElementById('frog');
+            
+            // Animasyon Sınıfını Yenile
+            frog.classList.remove('jump-anim');
+            void frog.offsetWidth; // Reflow trigger
+            frog.classList.add('jump-anim');
+
+            // Pozisyonu Güncelle
+            frog.style.left = positionPercent + "%";
+
+            // Kontrol Et (Animasyon bitimine yakın)
+            setTimeout(() => {
+                if (clickedNum === correctNum) {
+                    showSuccess();
+                } else {
+                    // Yanlış yere zıpladı
+                    // Basit bir geri bildirim (Sallanma vs. eklenebilir)
+                    alert("Yanlış yer! Kurbağa suya düşecek gibi oldu. Tekrar dene.");
+                    frog.style.left = '5%'; // Başa dön
+                }
+            }, 600);
+        }
+
+        function showSuccess() {
             const fb = document.getElementById('feedback');
             const title = document.getElementById('fb-title');
             const msg = document.getElementById('fb-msg');
+            const nextBtn = document.getElementById('next-btn');
 
-            if (userVal === currentTarget) {
-                title.innerText = "ŞİFRE ÇÖZÜLDÜ!";
-                title.style.color = "#ffd700";
-                msg.innerText = "Harika! Bir sonraki odaya geçiliyor.";
-                
-                const btn = fb.querySelector('button');
-                btn.onclick = nextLevel;
-                btn.innerText = "Sonraki Seviye ▶";
-
-            } else {
-                title.innerText = "YANLIŞ ŞİFRE!";
-                title.style.color = "#ff4444";
-                msg.innerText = "Hiyeroglifleri dikkatli say. (İpucu: " + levels[currentLvl].hint + ")";
-                
-                const btn = fb.querySelector('button');
-                btn.onclick = () => { fb.style.display = 'none'; };
-                btn.innerText = "Tekrar Dene ↺";
-            }
             fb.style.display = 'flex';
+
+            if (currentIdx === levels.length - 1) {
+                // Son Level
+                title.innerText = "TEBRİKLER!";
+                msg.innerText = "Sayı doğrusunun ustasısın. İşte şifre parçan:";
+                document.getElementById('secret-card').style.display = 'block';
+                nextBtn.innerText = "ANA MENÜYE DÖN";
+                nextBtn.onclick = () => window.location.href = 'index.html';
+            } else {
+                title.innerText = "HARİKA ATLAYIŞ!";
+                msg.innerText = "Doğru noktayı buldun.";
+                document.getElementById('secret-card').style.display = 'none';
+                nextBtn.innerText = "SONRAKİ SEVİYE ▶";
+                nextBtn.onclick = nextLevel;
+            }
         }
 
         function nextLevel() {
-            currentLvl++;
+            currentIdx++;
             loadLevel();
         }
 
-        function endGame() {
-            const fb = document.getElementById('feedback');
-            fb.style.display = 'flex';
-            document.getElementById('fb-title').innerText = "HAZİNE BULUNDU!";
-            document.getElementById('fb-msg').innerText = "Antik Mısır'ın tüm sırlarını çözdün.";
-            const btn = fb.querySelector('button');
-            btn.innerText = "Ana Menüye Dön";
-            btn.onclick = () => window.location.href = "index.html";
+        function showFinalSecret() {
+            // Güvenlik için burası (loadLevel içinde çağrılıyor)
         }
+
+        // --- KODLAMA MODAL ---
+        function openCodeModal() { document.getElementById('codeModal').style.display = 'flex'; }
+        function closeCodeModal() { document.getElementById('codeModal').style.display = 'none'; }
+        document.getElementById('codeModal').addEventListener('click', function(e) {
+            if(e.target === this) closeCodeModal();
+        });
 
     </script>
 </body>
