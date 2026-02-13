@@ -109,19 +109,20 @@
             flex: 1;
             width: 100%;
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* 'center' yerine 'flex-start' yaparak yukarı hizaladık */
             justify-content: center;
-            padding-bottom: 30px;
+            padding-top: 10px; /* Üstten biraz boşluk bıraktık */
+            padding-bottom: 100px;
         }
 
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 25px;
+            gap: 20px;
             width: 90%;
             max-width: 1100px;
-            height: 85%;
+            height: auto; /* Sabit yükseklik yerine auto yaparak içeriğe göre şekillenmesini sağladık */
         }
 
         /* --- OYUN KARTI --- */
@@ -262,7 +263,7 @@
     <header>
         <div class="theme-tag">1.TEMA: SAYILAR VE NİCELİKLER (1)</div>
         <h1>MAT.5.1.2 Gerçek Yaşam Problemleri</h1>
-        <div class="outcome-text">Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme</div>
+        <!-- <div class="outcome-text">Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme</div> -->
     </header>
 
     <div class="grid-wrapper">
